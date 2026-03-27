@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasketIQ | The Zero-Friction AI Basketball Platform</title>
+    <meta name="description" content="Revolutionizing basketball club management with Generative AI and WhatsApp-first administration.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --accent-secondary: #cc1020; /* A nod to Spain/BasketCanada Red */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--accent-secondary), #f43f5e);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 5% 4rem;
+            min-height: 70vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(59, 130, 246, 0.2); }
+            50% { border-color: rgba(59, 130, 246, 0.6); }
+            100% { border-color: rgba(59, 130, 246, 0.2); }
+        }
+
+        h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        h1 span {
+            background: linear-gradient(to right, var(--accent-primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border: none;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover:after {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255,255,255,0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Feature Showcase (Glassmorphism) */
+        .features {
+            display: flex;
+            justify-content: center;
+            padding: 0 5% 6rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 900px;
+            width: 100%;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-text p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .mockup {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .chat-bubble {
+            background: #2563eb;
+            color: white;
+            padding: 1rem;
+            border-radius: 16px 16px 0 16px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            width: 85%;
+            margin-left: auto;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .chat-bubble::after {
+            content: 'Voice Note (0:42) ▶';
+            display: block;
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .ai-response {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 16px 16px 16px 0;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            width: 95%;
+            position: relative;
+        }
+
+        .ai-response strong {
+            color: #a855f7;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .ai-response .tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-response .tag {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .glass-card {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <div class="logo">BasketIQ</div>
+        <div class="nav-links">
+            <a href="#demo">Platform</a>
+            <a href="#">Zero-Friction</a>
+            <a href="#">Security</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="badge">Powered by Google Cloud Vertex AI ✨</div>
+            <h1>The first <span>Zero-Friction</span><br>Basketball Ecosystem</h1>
+            <p class="subtitle">Forget complex management software. BasketIQ leverages Generative AI to process your voice notes, automating game chronicles, stats, and scheduling via a seamless WhatsApp-first experience.</p>
+            
+            <div class="cta-group">
+                <a href="mailto:ceo@basketiq.io" class="btn btn-primary">Join the Waitlist</a>
+                <a href="#demo" class="btn btn-secondary">See how it works</a>
+            </div>
+        </section>
+
+        <section class="features" id="demo">
+            <div class="glass-card">
+                <div class="feature-text">
+                    <h3>Voice-to-Intelligence Engine</h3>
+                    <p>Coaches just talk. Our proprietary AI (supported by Google Cloud Vertex) interprets game summaries and instantly generates structured chronicles, training plans, and social media readouts.</p>
+                    <p style="font-size: 0.95rem; border-left: 3px solid var(--accent-primary); padding-left: 1rem; color: #fff;">No data entry. Just coaching.</p>
+                </div>
+                <div class="mockup">
+                    <div class="chat-bubble">
+                        "Great game. We won by 15. The defense in the 3rd quarter was spectacular with a 1-3-1 zone. Hugo scored 20 points."
+                    </div>
+                    <div class="ai-response">
+                        <strong>✨ AI Chronicle Generated</strong>
+                        "A solid victory (+15) characterized by a dominant defensive switch to a 1-3-1 zone in the 3rd quarter. Standout performance by Hugo with a game-high 20 points."
+                        <div class="tags">
+                            <span class="tag">#Stats Updated</span>
+                            <span class="tag">#Social Drafted</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-top: 3rem;">
+                <div class="mockup" style="border-left: 4px solid var(--accent-secondary);">
+                    <div class="ai-response" style="width: 100%;">
+                        <strong>📈 AI Coaching Insight</strong>
+                        "Analysis of the last 3 games shows the U16 team struggles against match-up zones. Suggestion: Incorporate 'Flash to High Post' drills from the First Team Playbook to maintain club-wide tactical homogeneity."
+                        <div class="tags">
+                            <span class="tag" style="background: rgba(244, 63, 94, 0.15); color: #fb7185; border-color: rgba(244, 63, 94, 0.3);">#Tactical Alignment</span>
+                            <span class="tag" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3);">#Skill Progression</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-text">
+                    <h3>Elevating Technical Excellence</h3>
+                    <p>Go beyond administrative management. BasketIQ acts as an AI Assistant Coach for your entire organization. It learns your club's identity to bridge the gap between grassroots development and professional execution.</p>
+                    <p style="font-size: 0.95rem; border-left: 3px solid var(--accent-secondary); padding-left: 1rem; color: #fff;">Build a legacy, not just a roster.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
