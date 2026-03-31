@@ -1,0 +1,12 @@
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- I -->
+  <rect x="20" y="30" width="16" height="100" fill="#2563EB" />
+  <!-- Q -->
+  <circle cx="100" cy="80" r="40" fill="none" stroke="#2563EB" stroke-width="6"/>
+  <!-- basketball lines -->
+  <path d="M60 80 Q100 40 140 80" stroke="#2563EB" stroke-width="4" fill="none"/>
+  <path d="M60 80 Q100 120 140 80" stroke="#2563EB" stroke-width="4" fill="none"/>
+  <line x1="100" y1="40" x2="100" y2="120" stroke="#2563EB" stroke-width="4"/>
+  <!-- tail -->
+  <path d="M120 110 Q150 140 100 130" fill="#2563EB"/>
+</svg>

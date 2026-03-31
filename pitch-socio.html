@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BasketIQ — Partner Briefing · March 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────────────── */
+    :root {
+      --bg:          #0b0f19;
+      --text:        #ffffff;
+      --muted:       #94a3b8;
+      --blue:        #3b82f6;
+      --blue-dim:    rgba(59,130,246,0.18);
+      --blue-glow:   rgba(59,130,246,0.35);
+      --red:         #cc1020;
+      --red-dim:     rgba(204,16,32,0.15);
+      --glass:       rgba(255,255,255,0.04);
+      --glass-border:rgba(255,255,255,0.09);
+      --wa-green:    #25d366;
+      --wa-dark:     #075e54;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ─── Scroll Container ───────────────────────────────────────────────────── */
+    #deck {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    #deck::-webkit-scrollbar { display: none; }
+    #deck { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ─── Slide Base ─────────────────────────────────────────────────────────── */
+    .slide {
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 80px 48px 72px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle grid texture on every slide */
+    .slide::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* ─── Fixed UI Chrome ─────────────────────────────────────────────────────── */
+    #dotNav {
+      position: fixed;
+      right: 22px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 999;
+    }
+    .dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active {
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue-glow);
+      transform: scale(1.35);
+    }
+    .dot:hover:not(.active) { background: rgba(255,255,255,0.5); }
+
+    #counter {
+      position: fixed;
+      bottom: 20px; right: 44px;
+      font-size: 12px; color: var(--muted);
+      letter-spacing: 0.06em;
+      z-index: 999;
+    }
+
+    /* ─── Typography Helpers ─────────────────────────────────────────────────── */
+    .eyebrow {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--blue); margin-bottom: 12px;
+    }
+    .eyebrow.red { color: var(--red); }
+    h1 {
+      font-size: clamp(2.4rem, 3.6vw, 3.8rem);
+      font-weight: 800; line-height: 1.08; margin-bottom: 18px;
+    }
+    h2 {
+      font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+      font-weight: 800; line-height: 1.12; margin-bottom: 14px;
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    p   { color: var(--muted); line-height: 1.65; font-size: 0.92rem; }
+    .accent-blue { color: var(--blue); }
+    .accent-red  { color: var(--red); }
+
+    /* Glass card */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 22px 24px;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 3px 11px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .badge-blue   { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-green  { background: rgba(37,211,102,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    .badge-red    { background: var(--red-dim); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+    .badge-yellow { background: rgba(251,191,36,0.1); color: #fcd34d; border: 1px solid rgba(252,211,77,0.3); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: #c4b5fd; border: 1px solid rgba(196,181,253,0.3); }
+
+    /* Glow blob */
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.1;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── SLIDE 1: Elevator Pitch ───────────────────────────────────────────── */
+    #s1 { flex-direction: row; gap: 56px; text-align: left; }
+
+    .s1-left { flex: 1; position: relative; z-index: 1; }
+    .s1-left .logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .s1-left .logo-mark {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--blue), #6d28d9);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px;
+    }
+    .s1-left .logo-text {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .s1-left h1 span { color: var(--blue); }
+    .s1-left .description {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+      margin-bottom: 28px; max-width: 440px;
+    }
+    .s1-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .s1-bullets li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.95rem; color: var(--muted);
+    }
+    .s1-bullets li::before {
+      content: '▸'; color: var(--blue);
+      flex-shrink: 0; margin-top: 2px; font-size: 0.85rem;
+    }
+    .s1-bullets li strong { color: var(--text); }
+
+    /* WhatsApp Mock */
+    .wa-wrap { width: 330px; flex-shrink: 0; position: relative; z-index: 1; }
+    .wa-window {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 28px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .wa-header {
+      background: #1b6b5c;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 11px;
+    }
+    .wa-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--blue), #6d28d9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800;
+    }
+    .wa-name  { font-size: 14px; font-weight: 700; color: #fff; }
+    .wa-status{ font-size: 11px; color: rgba(255,255,255,0.65); }
+    .wa-body {
+      background: #111b21;
+      padding: 14px;
+      display: flex; flex-direction: column; gap: 9px;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M20 0L0 40h40z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .wa-row { display: flex; flex-direction: column; }
+    .wa-row.out { align-items: flex-end; }
+    .wa-row.in  { align-items: flex-start; }
+    .wa-bubble {
+      max-width: 88%;
+      padding: 9px 13px; border-radius: 12px;
+      font-size: 12.5px; line-height: 1.55;
+    }
+    .wa-bubble.out { background: #005c4b; color: #e9f5f3; border-bottom-right-radius: 3px; }
+    .wa-bubble.in  { background: #202c33; color: #e9edef; border-bottom-left-radius: 3px; }
+    .wa-meta {
+      display: flex; align-items: center; gap: 3px;
+      font-size: 10px; color: rgba(255,255,255,0.38);
+      margin-top: 3px;
+    }
+    .wa-row.out .wa-meta { justify-content: flex-end; }
+    .ticks { color: #53bdeb; }
+    .wa-label { font-size: 10px; color: #53bdeb; font-weight: 700; margin-bottom: 4px; }
+    .wa-list { list-style: none; margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+    .wa-list li {
+      font-size: 11.5px; color: #c8d3db;
+      padding-left: 9px; border-left: 2px solid var(--wa-green);
+    }
+    .wa-cite { font-size: 10px; color: #53bdeb; margin-top: 5px; font-style: italic; }
+
+    /* ─── SLIDE 2: Why Different ───────────────────────────────────────────── */
+    #s2 { flex-direction: column; gap: 0; justify-content: center; }
+    .s2-header { text-align: center; margin-bottom: 28px; }
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; width: 100%; max-width: 920px; margin: 0 auto 18px;
+    }
+    .cmp-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 18px 22px; }
+    .cmp-vs { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .cmp-vs span { font-size: 18px; }
+    .cmp-row { display: flex; flex-direction: column; gap: 6px; }
+    .cmp-item {
+      font-size: 12.5px; padding: 6px 10px; border-radius: 8px;
+      display: flex; align-items: flex-start; gap: 7px; line-height: 1.45;
+    }
+    .cmp-item.bad  { background: rgba(239,68,68,0.08); color: #fca5a5; }
+    .cmp-item.good { background: rgba(34,197,94,0.08); color: #86efac; }
+    .cmp-item .icon { flex-shrink: 0; margin-top: 1px; }
+    .first-mover {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.07));
+      border: 1px solid rgba(59,130,246,0.28);
+      border-radius: 12px; padding: 14px 28px;
+      text-align: center; max-width: 920px; width: 100%; margin: 0 auto;
+    }
+    .first-mover p { color: #fff; font-size: 0.95rem; font-weight: 600; }
+    .first-mover span { color: var(--blue); }
+
+    /* ─── SLIDE 3: Functional Components ──────────────────────────────────── */
+    #s3 { flex-direction: column; }
+    .s3-header { text-align: center; margin-bottom: 28px; }
+    .pillars {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 14px; width: 100%; max-width: 1100px; margin: 0 auto 18px;
+    }
+    .pillar {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 18px; padding: 26px 22px;
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; overflow: hidden;
+    }
+    .pillar::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .pillar.p1::after { background: linear-gradient(90deg, var(--blue), #6d28d9); }
+    .pillar.p2::after { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .pillar.p3::after { background: linear-gradient(90deg, var(--wa-green), #128c7e); }
+    .pillar.p4::after { background: linear-gradient(90deg, #a855f7, #ec4899); }
+    .pillar-icon { font-size: 30px; line-height: 1; }
+    .pillar h3 { font-size: 1rem; font-weight: 700; }
+    .pillar p { font-size: 0.82rem; }
+    .pillar-feats { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+    .pillar-feats li { font-size: 0.8rem; color: var(--muted); display: flex; align-items: flex-start; gap: 6px; }
+    .pillar-feats li::before { content: '·'; color: var(--blue); font-weight: 900; flex-shrink: 0; }
+    .arch-flow {
+      display: flex; align-items: center; gap: 8px;
+      justify-content: center; flex-wrap: wrap;
+      max-width: 980px; width: 100%; margin: 0 auto;
+    }
+    .arch-node {
+      background: var(--blue-dim); border: 1px solid rgba(59,130,246,0.28);
+      border-radius: 8px; padding: 8px 16px;
+      font-size: 12px; font-weight: 700; color: var(--blue);
+    }
+    .arch-arrow { color: var(--muted); font-size: 1.1rem; }
+
+    /* ─── SLIDE 4: Lean Development ────────────────────────────────────────── */
+    #s4 { flex-direction: column; }
+    .s4-header { text-align: center; margin-bottom: 26px; }
+    .prog-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; width: 100%; max-width: 940px; margin: 0 auto 22px;
+      position: relative;
+    }
+    .prog-row::before {
+      content: '';
+      position: absolute; top: 26px; left: calc(16.66% + 8px); right: calc(16.66% + 8px);
+      height: 2px; background: linear-gradient(90deg, var(--blue), #6d28d9);
+      z-index: 0;
+    }
+    .prog-item {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      padding: 18px 20px; position: relative; z-index: 1;
+    }
+    .prog-item:first-child { border-radius: 14px 0 0 14px; }
+    .prog-item:last-child  { border-radius: 0 14px 14px 0; }
+    .prog-item + .prog-item { border-left: none; }
+    .prog-phase {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--blue); margin-bottom: 6px;
+    }
+    .prog-item h3 { font-size: 0.95rem; margin-bottom: 6px; }
+    .prog-item p  { font-size: 0.8rem; }
+    .prog-item .prog-badge-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .epics-row {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 10px; width: 100%; max-width: 940px; margin: 0 auto 18px;
+    }
+    .epic-chip {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 12px 8px; text-align: center;
+    }
+    .epic-num {
+      font-size: 20px; font-weight: 800; color: var(--blue);
+      line-height: 1; margin-bottom: 6px;
+    }
+    .epic-chip p { font-size: 0.7rem; line-height: 1.4; color: var(--muted); }
+    .lean-principles {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      max-width: 940px; width: 100%; margin: 0 auto;
+    }
+    .principle {
+      background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.18);
+      border-radius: 10px; padding: 9px 16px;
+      font-size: 0.82rem; color: var(--text); font-weight: 500;
+    }
+    .principle span { color: var(--blue); font-weight: 700; }
+
+    /* ─── SLIDE 5: Funding ─────────────────────────────────────────────────── */
+    #s5 { flex-direction: column; }
+    .s5-header { text-align: center; margin-bottom: 26px; }
+    .funding-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 14px; width: 100%; max-width: 980px; margin: 0 auto 18px;
+    }
+    .f-card {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 18px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+      position: relative; overflow: hidden;
+    }
+    .f-card.spotlight {
+      border-color: rgba(59,130,246,0.35);
+      background: linear-gradient(145deg, rgba(59,130,246,0.09), rgba(139,92,246,0.05));
+    }
+    .f-stage {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--blue);
+    }
+    .f-timeline { font-size: 10.5px; color: var(--muted); margin-top: -4px; }
+    .f-amount {
+      font-size: 1.55rem; font-weight: 800; line-height: 1.1;
+      margin: 4px 0 2px;
+    }
+    .f-equity {
+      font-size: 10px; font-weight: 700; padding: 3px 9px;
+      border-radius: 20px; display: inline-block; align-self: flex-start;
+    }
+    .eq-zero   { background: rgba(74,222,128,0.12); color: #4ade80; }
+    .eq-low    { background: rgba(251,191,36,0.12); color: #fcd34d; }
+    .eq-opt    { background: rgba(167,139,250,0.12); color: #c4b5fd; }
+    .f-items   { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+    .f-items li{
+      font-size: 0.78rem; color: var(--muted);
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .f-items li::before { content: '→'; color: var(--blue); flex-shrink: 0; }
+    .funding-totals {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.06));
+      border: 1px solid rgba(59,130,246,0.26);
+      border-radius: 12px; padding: 13px 28px;
+      display: flex; align-items: center; justify-content: center; gap: 28px;
+      max-width: 980px; width: 100%; margin: 0 auto; flex-wrap: wrap;
+    }
+    .ft-item { text-align: center; }
+    .ft-num  { font-size: 1.5rem; font-weight: 800; color: var(--blue); line-height: 1; }
+    .ft-lbl  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .ft-div  { width: 1px; height: 36px; background: var(--glass-border); }
+
+    /* ─── SLIDE 6: Visibility ──────────────────────────────────────────────── */
+    #s6 { flex-direction: column; }
+    .s6-header { text-align: center; margin-bottom: 26px; }
+    .vis-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 18px; width: 100%; max-width: 940px; margin: 0 auto 18px;
+    }
+    .vis-col-head {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--blue); margin-bottom: 12px;
+    }
+    .vis-col-head.red { color: var(--red); }
+    .vis-items { display: flex; flex-direction: column; gap: 10px; }
+    .vi {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 12px 14px;
+      display: flex; align-items: flex-start; gap: 11px;
+    }
+    .vi-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+    .vi-body h5 { font-size: 0.88rem; font-weight: 700; margin-bottom: 3px; }
+    .vi-body p  { font-size: 0.78rem; }
+    .vis-callout {
+      background: rgba(204,16,32,0.07); border: 1px solid rgba(204,16,32,0.22);
+      border-radius: 12px; padding: 13px 28px;
+      text-align: center; max-width: 940px; width: 100%; margin: 0 auto;
+    }
+    .vis-callout p { color: #fff; font-size: 0.9rem; font-weight: 600; }
+    .vis-callout span { color: var(--red); }
+
+    /* ─── SLIDE 7: Milestones ─────────────────────────────────────────────── */
+    #s7 { flex-direction: column; }
+    .s7-header { text-align: center; margin-bottom: 28px; }
+    .tl-track {
+      display: flex; width: 100%; max-width: 1020px; margin: 0 auto;
+      position: relative; align-items: flex-start;
+    }
+    .tl-track::before {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 11px; height: 2px;
+      background: linear-gradient(90deg, var(--blue), #6d28d9, var(--red));
+      z-index: 0;
+    }
+    .tl-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .tl-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--blue); box-shadow: 0 0 6px var(--blue-glow);
+      margin-bottom: 14px; flex-shrink: 0;
+    }
+    .tl-dot.crit {
+      background: var(--red); box-shadow: 0 0 6px rgba(204,16,32,0.5);
+      width: 16px; height: 16px;
+    }
+    .tl-box {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 10px; padding: 12px 10px; width: 92%; text-align: center;
+    }
+    .tl-month {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--blue); margin-bottom: 5px;
+    }
+    .tl-month.red { color: var(--red); }
+    .tl-box h4 { font-size: 0.78rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .tl-box p  { font-size: 0.72rem; line-height: 1.4; }
+    .tl-metrics {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      max-width: 1020px; width: 100%; margin: 18px auto 0;
+    }
+    .tl-metric {
+      background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.18);
+      border-radius: 10px; padding: 7px 14px;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .tl-metric strong { color: #fff; font-weight: 700; }
+
+    /* ─── SLIDE 8 / 9 / 10: MVP Slides ──────────────────────────────────── */
+    .mvp-slide { flex-direction: row; gap: 60px; }
+    .mvp-left  { flex: 1.1; position: relative; z-index: 1; }
+    .mvp-right { flex: 1; display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1; }
+    .mvp-hito  {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.16em; color: var(--red); margin-bottom: 10px;
+    }
+    .mvp-left h2 { font-size: clamp(1.6rem, 2.5vw, 2.3rem); margin-bottom: 12px; }
+    .mvp-left p  { font-size: 0.95rem; margin-bottom: 18px; }
+    .mvp-badges  { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .mvp-sub-card {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 14px; padding: 16px 18px;
+    }
+    .mvp-sub-card h4 {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--blue); margin-bottom: 10px;
+    }
+    .mvp-sub-card h4.red { color: var(--red); }
+    .mvp-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .mvp-list li {
+      font-size: 0.83rem; color: var(--muted);
+      display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+    }
+    .mvp-list li::before { content: '✓'; color: #4ade80; font-weight: 700; flex-shrink: 0; }
+    .tl-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .tl-list li {
+      font-size: 0.82rem; color: var(--muted);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .tl-list li .tl-d {
+      font-weight: 700; color: #fff; width: 76px; flex-shrink: 0; font-size: 0.78rem;
+    }
+    .eic-stats {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px;
+    }
+    .eic-stat {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 14px 18px; text-align: center; flex: 1; min-width: 90px;
+    }
+    .eic-stat .es-num {
+      font-size: 1.5rem; font-weight: 800; color: var(--blue); line-height: 1;
+    }
+    .eic-stat .es-lbl { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .plan-b-box {
+      background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.22);
+      border-radius: 12px; padding: 14px 16px; margin-top: 4px;
+    }
+    .plan-b-box h4 { font-size: 0.82rem; font-weight: 700; color: #fcd34d; margin-bottom: 6px; }
+    .plan-b-box p  { font-size: 0.78rem; }
+
+    /* ─── ARCH SLIDE: pulse animations ──────────────────────────────────────── */
+    @keyframes arch-pulse-blue {
+      0%,100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+      50%      { box-shadow: 0 0 16px 4px rgba(59,130,246,0.28); }
+    }
+    @keyframes arch-pulse-green {
+      0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+      50%      { box-shadow: 0 0 20px 5px rgba(16,185,129,0.3); }
+    }
+    .apb { animation: arch-pulse-blue  3s ease-in-out infinite; }
+    .apg { animation: arch-pulse-green 2.5s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Fixed Chrome ─────────────────────────────────────────────────────── -->
+  <nav id="dotNav"></nav>
+  <div id="counter">1 / 10</div>
+
+  <!-- ─── Deck ──────────────────────────────────────────────────────────────── -->
+  <div id="deck">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 1 · ELEVATOR PITCH
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s1" class="slide">
+      <div class="blob" style="width:500px;height:500px;background:linear-gradient(135deg,var(--blue),#6d28d9);top:-150px;left:-100px;"></div>
+      <div class="blob" style="width:300px;height:300px;background:var(--red);bottom:-80px;right:200px;"></div>
+
+      <div class="s1-left">
+        <div class="logo">
+          <div class="logo-mark">🏀</div>
+          <span class="logo-text">BasketIQ</span>
+        </div>
+        <div class="eyebrow">Elevator Pitch · March 2026</div>
+        <h1>Elite basketball<br>knowledge,<br><span>democratized.</span></h1>
+        <p class="description">
+          Small clubs, remote coaches, underfunded academies — they all have the same technical questions as Real Madrid's cantera. Until now, they had no one to ask.
+        </p>
+        <ul class="s1-bullets">
+          <li><strong>Problem:</strong> Coaches waste hours searching scattered resources. Knowledge is siloed in elite clubs.</li>
+          <li><strong>Solution:</strong> A structured AI knowledge base that answers any basketball question via WhatsApp — citing real sources, zero hallucinations.</li>
+          <li><strong>Access:</strong> No new app. No learning curve. Just WhatsApp.</li>
+          <li><strong>Target:</strong> 2,847 basketball clubs in Spain alone. Then Europe.</li>
+        </ul>
+      </div>
+
+      <div class="wa-wrap">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Available 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body">
+
+            <div class="wa-row out">
+              <div class="wa-bubble out">How do I teach 1v1 defense to my U12 players? They keep reaching for the ball.</div>
+              <div class="wa-meta"><span>14:32</span><span class="ticks">✓✓</span></div>
+            </div>
+
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · U12 Defense</div>
+                Great question! For U12, focus on <strong>positioning before contact</strong>. Key progression:
+                <ul class="wa-list">
+                  <li>Step 1: Ball pressure stance — knees bent, weight on balls of feet</li>
+                  <li>Step 2: Retreat step drill (not reach) — practice with cones</li>
+                  <li>Step 3: Shadowing game — defender mirrors without touching</li>
+                </ul>
+                <div class="wa-cite">📚 López, J.V. (2018) · FEB Formative Manual · Exercise #D-047</div>
+              </div>
+              <div class="wa-meta"><span>14:32</span></div>
+            </div>
+
+            <div class="wa-row out">
+              <div class="wa-bubble out">Give me more on the retreat step — my kids keep crossing their feet.</div>
+              <div class="wa-meta"><span>14:34</span><span class="ticks">✓✓</span></div>
+            </div>
+
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Foot Mechanics</div>
+                Crossed feet = common U12 habit ✅ Fix with "Shark Drill":
+                <ul class="wa-list">
+                  <li>Defender slides foot-to-foot (never cross)</li>
+                  <li>Tape a line on the floor — outside foot stays outside</li>
+                  <li>Progress to: live ball, then full 1v1</li>
+                </ul>
+                <div class="wa-cite">📚 USA Basketball Player Development · Level 2 · Drill #SH-12</div>
+              </div>
+              <div class="wa-meta"><span>14:34</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 2 · WHY BASKETIQ IS DIFFERENT
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s2" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-100px;right:-80px;opacity:0.08;filter:blur(80px);"></div>
+
+      <div class="s2-header">
+        <div class="eyebrow">Competitive Positioning</div>
+        <h2>Why BasketIQ is <span class="accent-blue">different</span></h2>
+      </div>
+
+      <div class="compare-grid">
+        <div class="cmp-card">
+          <div class="cmp-vs"><span>🤖</span>vs ChatGPT / Generic AI</div>
+          <div class="cmp-row">
+            <div class="cmp-item bad"><span class="icon">✗</span>Hallucinates exercises — cites non-existent drills</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>No source citations — impossible to verify, GDPR risk</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>No basketball domain knowledge — generic answers</div>
+            <div class="cmp-item good"><span class="icon">✓</span>BasketIQ: Proprietary ontology + auditable citation lineage</div>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <div class="cmp-vs"><span>▶️</span>vs YouTube / Hudl / Video Platforms</div>
+          <div class="cmp-row">
+            <div class="cmp-item bad"><span class="icon">✗</span>Scattered content — hours of searching for one drill</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>Variable quality — no methodological structure</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>No conversational refinement — you watch, you don't ask</div>
+            <div class="cmp-item good"><span class="icon">✓</span>BasketIQ: Structured progressions, ask follow-up questions</div>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <div class="cmp-vs"><span>📋</span>vs FEB / Federation Courses</div>
+          <div class="cmp-row">
+            <div class="cmp-item bad"><span class="icon">✗</span>Static content — course is the same for everyone</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>Expensive: €300–€1,500 · Available once a year</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>Not contextual — no answer to "my specific U12 problem today"</div>
+            <div class="cmp-item good"><span class="icon">✓</span>BasketIQ: Available 24/7 · Updated continuously · €50–75/month</div>
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <div class="cmp-vs"><span>📱</span>vs Club Management SaaS (TeamSnap, etc.)</div>
+          <div class="cmp-row">
+            <div class="cmp-item bad"><span class="icon">✗</span>Admin tools only — scheduling, payments, no knowledge</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>No AI — no conversational coaching support</div>
+            <div class="cmp-item bad"><span class="icon">✗</span>New app friction — requires teams to migrate</div>
+            <div class="cmp-item good"><span class="icon">✓</span>BasketIQ: AI-first knowledge · WhatsApp · Zero migration needed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="first-mover">
+        <p>🏆 <span>No AI-powered basketball knowledge base exists in Europe.</span> We are the first mover in a vertical with 2,847 clubs in Spain and 35,000+ across Europe.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 3 · FUNCTIONAL COMPONENTS
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s3" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:450px;height:450px;background:linear-gradient(135deg,#6d28d9,var(--blue));bottom:-100px;left:-80px;opacity:0.09;filter:blur(90px);"></div>
+
+      <div class="s3-header">
+        <div class="eyebrow">Cloud-Agnostic Architecture</div>
+        <h2>Provider-Resilient <span class="accent-blue">Infrastructure</span></h2>
+      </div>
+
+      <div class="pillars">
+        <div class="pillar p1">
+          <div class="pillar-icon">🧠</div>
+          <div class="badge badge-blue">Proprietary · First in Europe</div>
+          <h3>Basketball Ontology</h3>
+          <p>A structured semantic map of 2,000+ formative basketball concepts — the foundation nothing else has.</p>
+          <ul class="pillar-feats">
+            <li>OWL/RDF schema: exercises, progressions, objectives, age groups</li>
+            <li>Example: "Suspension shot" → 8-stage progression → 50 drills → common errors</li>
+            <li>Knowledge Graph (Neo4j) — queryable, extensible, club-specific adaptable</li>
+            <li>Built from FIBA, WABC, FEB official sources — fully auditable</li>
+          </ul>
+        </div>
+
+        <div class="pillar p2">
+          <div class="pillar-icon">⚡</div>
+          <div class="badge badge-yellow">GDPR-Compliant · Zero Hallucinations</div>
+          <h3>RAG + Citation Lineage</h3>
+          <p>Orchestration layer that leverages **Claude, GPT, and Gemini** through a sovereign enterprise gateway.</p>
+          <ul class="pillar-feats">
+            <li>Multi-model routing: optimized for response cost vs accuracy</li>
+            <li>SOC2/GDPR compliant infrastructure (AWS Bedrock / Vertex AI)</li>
+            <li>Citation lineage: automatic source verification for every response</li>
+            <li>NLU Precision: high-accuracy basketball domain understanding</li>
+          </ul>
+        </div>
+
+        <div class="pillar p3">
+          <div class="pillar-icon">💬</div>
+          <div class="badge badge-green">Zero Friction · Zero App</div>
+          <h3>WhatsApp-First UX</h3>
+          <p>Coaches already live on WhatsApp. We don't ask them to change behavior.</p>
+          <ul class="pillar-feats">
+            <li>Conversational: ask, refine, drill down — just like texting an expert</li>
+            <li>Response time: &lt;30 seconds for structured, cited answer</li>
+            <li>Context memory: follow-up questions build on previous exchange</li>
+            <li>Future: Web portal + analytics dashboard for club coordinators</li>
+          </ul>
+        </div>
+
+        <div class="pillar p4">
+          <div class="pillar-icon">🔄</div>
+          <div class="badge badge-purple">Adaptive · Club-Specific</div>
+          <h3>Living Knowledge Graph</h3>
+          <p>The KB is not static. Every session, every coach interaction, every match outcome teaches the system.</p>
+          <ul class="pillar-feats">
+            <li>Confidence scores on every relationship — exercises that get used go up; rejected ones go down</li>
+            <li>Nightly ETL: WhatsApp session logs → graph confidence updates (automated)</li>
+            <li>Coach retrospectives + match analysis feed back into the graph</li>
+            <li>Club-specific layer: your club's patterns personalize your recommendations over time</li>
+            <li>Future: multi-club consensus — Bayesian averaging across clubs improves the shared graph for everyone</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Beyond AI: mission values -->
+      <div style="display:flex;gap:14px;width:100%;max-width:1100px;margin:12px auto 0;">
+        <div style="flex:1;background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.05));border:1px solid rgba(59,130,246,0.22);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:14px;">
+          <div style="font-size:28px;flex-shrink:0;">💶</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:3px;">Democratisation of knowledge</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Elite methodology available to any club, anywhere. <strong style="color:#fff;">€50–75/month</strong> vs €300–1,500 for a federation course. Small club in a village = same knowledge as Real Madrid's cantera.</div>
+          </div>
+        </div>
+        <div style="flex:1;background:linear-gradient(135deg,rgba(204,16,32,0.07),rgba(251,113,133,0.04));border:1px solid rgba(204,16,32,0.2);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:14px;">
+          <div style="font-size:28px;flex-shrink:0;">🏀</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#f87171;margin-bottom:3px;">Promotion of grassroots sport</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.5;">Better-equipped coaches → better training → <strong style="color:#fff;">more kids stay in sport</strong>. Every retention improvement is social impact. Directly fundable as public interest (Madrid Emprende, CSD, EIC social dimension).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-flow">
+        <div class="arch-node">Coach WhatsApp</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">NLU + Intent</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">RAG Engine</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">Ontology Graph</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">Cited Answer</div>
+        <div class="arch-arrow">↗ ↙</div>
+        <div class="arch-node" style="border-color:rgba(168,85,247,0.4);color:#c4b5fd;background:rgba(168,85,247,0.1);">Feedback Loop</div>
+      </div>
+      <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:7px;max-width:1100px;width:100%;">Session logs · Coach retrospectives · Match outcomes → confidence scores updated nightly → KB adapts to your club</div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE ARCH · ARCHITECTURE DIAGRAM
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s-arch" class="slide" style="flex-direction:column; padding: 32px 60px 20px 72px;">
+      <div class="blob" style="width:440px;height:440px;background:linear-gradient(135deg,#6d28d9,var(--blue));top:-100px;right:-80px;opacity:0.07;filter:blur(100px);pointer-events:none;"></div>
+
+      <div style="text-align:center;margin-bottom:16px;position:relative;z-index:1;flex-shrink:0;">
+        <div class="eyebrow">Technical Architecture</div>
+        <h2>How BasketIQ <span class="accent-blue">thinks</span></h2>
+      </div>
+
+      <!-- Diagram: 960 × 316 fixed canvas, scroll-safe -->
+      <div style="position:relative;width:min(960px,100%);height:316px;margin:0 auto;flex-shrink:0;z-index:1;">
+
+        <!-- Swim lane backgrounds -->
+        <div style="position:absolute;left:0;top:0;width:178px;height:316px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.14);border-radius:12px;"></div>
+        <div style="position:absolute;left:186px;top:0;width:452px;height:316px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.12);border-radius:12px;"></div>
+        <div style="position:absolute;left:646px;top:0;width:314px;height:316px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.12);border-radius:12px;"></div>
+
+        <!-- Lane labels -->
+        <div style="position:absolute;left:0;top:11px;width:178px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.13em;color:rgba(59,130,246,0.85);">Interface</div>
+        <div style="position:absolute;left:186px;top:11px;width:452px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.13em;color:rgba(167,139,250,0.9);">AI Engine</div>
+        <div style="position:absolute;left:646px;top:11px;width:314px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.13em;color:rgba(52,211,153,0.9);">Knowledge Base</div>
+
+        <!-- Node: WhatsApp -->
+        <div class="apb" style="position:absolute;left:18px;top:64px;width:142px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.32);border-radius:12px;padding:14px 8px;text-align:center;">
+          <div style="font-size:26px;line-height:1;margin-bottom:6px;">💬</div>
+          <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">WhatsApp</div>
+          <div style="font-size:9.5px;color:var(--muted);line-height:1.45;">Coach asks<br>in plain language</div>
+        </div>
+
+        <!-- Node: NLU -->
+        <div style="position:absolute;left:200px;top:58px;width:118px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+          <div style="font-size:22px;line-height:1;margin-bottom:5px;">🔍</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px;">NLU + Intent</div>
+          <div style="font-size:9px;color:var(--muted);">Understands question</div>
+        </div>
+
+        <!-- Node: LLM Inference API -->
+        <div style="position:absolute;left:348px;top:58px;width:118px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+          <div style="font-size:22px;line-height:1;margin-bottom:5px;">🤖</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px;">Inference API</div>
+          <div style="font-size:9px;color:var(--muted);">Multi-Model Routing</div>
+        </div>
+
+        <!-- Node: Citation Lineage -->
+        <div style="position:absolute;left:496px;top:58px;width:120px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28);border-radius:12px;padding:12px 8px;text-align:center;">
+          <div style="font-size:22px;line-height:1;margin-bottom:5px;">📎</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:2px;">Citation Lineage</div>
+          <div style="font-size:9px;color:var(--muted);">Sources every answer</div>
+        </div>
+
+        <!-- Node: Ontology Graph (pulsing) -->
+        <div class="apg" style="position:absolute;left:660px;top:45px;width:172px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.36);border-radius:12px;padding:12px 10px;text-align:center;">
+          <div style="font-size:24px;line-height:1;margin-bottom:5px;">🧠</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:3px;">Ontology Graph</div>
+          <div style="font-size:9px;color:var(--muted);line-height:1.45;">2,000+ concepts<br>Neo4j · FIBA / WABC</div>
+        </div>
+
+        <!-- Node: Operational DB -->
+        <div style="position:absolute;left:660px;top:175px;width:172px;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.22);border-radius:12px;padding:12px 10px;text-align:center;">
+          <div style="font-size:22px;line-height:1;margin-bottom:5px;">📊</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:3px;">Operational DB</div>
+          <div style="font-size:9px;color:var(--muted);line-height:1.45;">Sessions · Attendance<br>Game chronicles</div>
+        </div>
+
+        <!-- ETL Bridge label (sits on top of the feedback loop line) -->
+        <div style="position:absolute;left:270px;top:280px;width:320px;text-align:center;">
+          <span style="font-size:9.5px;font-weight:700;color:rgba(167,139,250,0.85);letter-spacing:0.05em;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;padding:4px 12px;display:inline-block;">🔄 ETL Bridge — nightly confidence update</span>
+        </div>
+
+        <!-- SVG overlay: static connectors + animated flow dots -->
+        <svg style="position:absolute;left:0;top:0;pointer-events:none;overflow:visible;" width="960" height="316" viewBox="0 0 960 316" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Glow filters -->
+            <filter id="gb2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="gc2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="gp2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Arrowheads -->
+            <marker id="aB" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,1.5 L6,3.5 L0,5.5 Z" fill="rgba(59,130,246,0.7)"/>
+            </marker>
+            <marker id="aC" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,1.5 L6,3.5 L0,5.5 Z" fill="rgba(103,232,249,0.7)"/>
+            </marker>
+            <marker id="aP" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,1.5 L6,3.5 L0,5.5 Z" fill="rgba(167,139,250,0.7)"/>
+            </marker>
+            <marker id="aG" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,1.5 L6,3.5 L0,5.5 Z" fill="rgba(52,211,153,0.7)"/>
+            </marker>
+          </defs>
+
+          <!-- ── Static connectors: QUERY (blue solid) ── -->
+          <line x1="160" y1="104" x2="200" y2="98"  stroke="rgba(59,130,246,0.5)" stroke-width="1.5" marker-end="url(#aB)"/>
+          <line x1="318" y1="98"  x2="348" y2="98"  stroke="rgba(59,130,246,0.5)" stroke-width="1.5" marker-end="url(#aB)"/>
+          <line x1="466" y1="98"  x2="496" y2="98"  stroke="rgba(59,130,246,0.5)" stroke-width="1.5" marker-end="url(#aB)"/>
+          <path d="M 616,98 Q 638,98 660,85"        stroke="rgba(59,130,246,0.5)" stroke-width="1.5" fill="none" marker-end="url(#aB)"/>
+
+          <!-- ── Static connector: RESPONSE (cyan dashed) ── -->
+          <path d="M 660,102 Q 638,118 618,126 L 496,126 L 466,126 L 348,126 L 318,126 L 200,126 L 160,122"
+                stroke="rgba(103,232,249,0.4)" stroke-width="1.3" fill="none" stroke-dasharray="5,3" marker-end="url(#aC)"/>
+
+          <!-- ── Static connector: OPS branch (green dashed) ── -->
+          <path d="M 616,112 L 638,112 L 638,215 L 660,215"
+                stroke="rgba(52,211,153,0.38)" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#aG)"/>
+
+          <!-- ── Static connector: FEEDBACK / ETL (purple dashed) ── -->
+          <path d="M 746,258 L 746,275 L 89,275 L 89,184"
+                stroke="rgba(167,139,250,0.45)" stroke-width="1.5" fill="none" stroke-dasharray="7,4" marker-end="url(#aP)"/>
+
+          <!-- ── Hidden motion paths ── -->
+          <path id="mq" d="M 160,104 L 200,98 L 318,98 L 348,98 L 466,98 L 496,98 L 616,98 Q 638,98 660,85"       fill="none" visibility="hidden"/>
+          <path id="mr" d="M 660,102 Q 638,118 618,126 L 496,126 L 466,126 L 348,126 L 318,126 L 200,126 L 160,122" fill="none" visibility="hidden"/>
+          <path id="mo" d="M 616,112 L 638,112 L 638,215 L 660,215"       fill="none" visibility="hidden"/>
+          <path id="mf" d="M 746,258 L 746,275 L 89,275 L 89,184"         fill="none" visibility="hidden"/>
+
+          <!-- ── Animated dots: Query (blue) × 2 staggered ── -->
+          <g filter="url(#gb2)">
+            <circle r="4.5" fill="#3b82f6">
+              <animateMotion dur="2s" repeatCount="indefinite" begin="0s"   calcMode="linear"><mpath href="#mq"/></animateMotion>
+            </circle>
+            <circle r="4.5" fill="#3b82f6">
+              <animateMotion dur="2s" repeatCount="indefinite" begin="-1s"  calcMode="linear"><mpath href="#mq"/></animateMotion>
+            </circle>
+          </g>
+
+          <!-- ── Animated dots: Response (cyan) ── -->
+          <g filter="url(#gc2)">
+            <circle r="4" fill="#67e8f9">
+              <animateMotion dur="2.6s" repeatCount="indefinite" begin="-1.3s" calcMode="linear"><mpath href="#mr"/></animateMotion>
+            </circle>
+          </g>
+
+          <!-- ── Animated dot: Ops data (green) ── -->
+          <circle r="3.5" fill="#34d399">
+            <animateMotion dur="3.5s" repeatCount="indefinite" begin="-1.2s" calcMode="linear"><mpath href="#mo"/></animateMotion>
+          </circle>
+
+          <!-- ── Animated dots: Feedback / ETL (purple) × 2 staggered ── -->
+          <g filter="url(#gp2)">
+            <circle r="4" fill="#a78bfa">
+              <animateMotion dur="4s" repeatCount="indefinite" begin="0s"  calcMode="linear"><mpath href="#mf"/></animateMotion>
+            </circle>
+            <circle r="4" fill="#a78bfa">
+              <animateMotion dur="4s" repeatCount="indefinite" begin="-2s" calcMode="linear"><mpath href="#mf"/></animateMotion>
+            </circle>
+          </g>
+        </svg>
+
+      </div><!-- /diagram canvas -->
+
+      <!-- Legend -->
+      <div style="display:flex;gap:22px;justify-content:center;margin-top:13px;flex-shrink:0;position:relative;z-index:1;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+          <svg width="30" height="10" style="flex-shrink:0;"><line x1="2" y1="5" x2="22" y2="5" stroke="#3b82f6" stroke-width="2"/><circle cx="26" cy="5" r="3.5" fill="#3b82f6"/></svg>
+          Coach query
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+          <svg width="30" height="10" style="flex-shrink:0;"><line x1="2" y1="5" x2="22" y2="5" stroke="#67e8f9" stroke-width="2" stroke-dasharray="4,2"/><circle cx="26" cy="5" r="3.5" fill="#67e8f9"/></svg>
+          Cited response
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+          <svg width="30" height="10" style="flex-shrink:0;"><line x1="2" y1="5" x2="22" y2="5" stroke="#34d399" stroke-width="2" stroke-dasharray="4,2"/><circle cx="26" cy="5" r="3.5" fill="#34d399"/></svg>
+          Operational data
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);">
+          <svg width="30" height="10" style="flex-shrink:0;"><line x1="2" y1="5" x2="22" y2="5" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6,3"/><circle cx="26" cy="5" r="3.5" fill="#a78bfa"/></svg>
+          Learning loop (nightly)
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 4 · LEAN DEVELOPMENT STRATEGY
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s4" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:380px;height:380px;background:var(--red);top:-80px;right:-60px;opacity:0.07;filter:blur(80px);"></div>
+
+      <div class="s4-header">
+        <div class="eyebrow">Execution Strategy</div>
+        <h2>Lean development: <span class="accent-blue">validate before scale</span></h2>
+      </div>
+
+      <div class="prog-row">
+        <div class="prog-item">
+          <div class="prog-phase">Phase 1 · Apr–Jun 2026</div>
+          <h3>PoV — Quick Wins</h3>
+          <p>Immediate high-value tools that create stickiness fast. Automated chronicles, attendance tracking, practice management via WhatsApp.</p>
+          <div class="prog-badge-row">
+            <span class="badge badge-green">Zero ontology needed</span>
+            <span class="badge badge-blue">Instant coach value</span>
+          </div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-phase">Phase 2 · Jul–Sep 2026</div>
+          <h3>V1 — First Deployment</h3>
+          <p>Full KB with ontology + RAG + citation lineage. Real pilot at Club Villanueva de la Cañada. Validated with 3–5 coaches, measured NPS.</p>
+          <div class="prog-badge-row">
+            <span class="badge badge-blue">Villanueva pilot</span>
+            <span class="badge badge-yellow">LOIs begin</span>
+          </div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-phase">Phase 3 · Oct–Nov 2026</div>
+          <h3>V2 — Competition Ready</h3>
+          <p>Enhanced product for EIC Accelerator submission and startup competition demos. Multi-club, analytics dashboard, real usage metrics.</p>
+          <div class="prog-badge-row">
+            <span class="badge badge-red">EIC Nov 6</span>
+            <span class="badge badge-purple">South Summit</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="epics-row">
+        <div class="epic-chip">
+          <div class="epic-num">1</div>
+          <p>Initial Funding &amp; Credits</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">2</div>
+          <p>MVP PoV Quick Wins</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">3</div>
+          <p>MVP V1 Villanueva</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">4</div>
+          <p>SaaS Platform Scaling</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">5</div>
+          <p>Strategic Alliances Madrid</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">6</div>
+          <p>MVP V2 CEI / EIC</p>
+        </div>
+        <div class="epic-chip">
+          <div class="epic-num">7</div>
+          <p>Q3–Q4 Grants &amp; Funding</p>
+        </div>
+      </div>
+
+      <div class="lean-principles">
+        <div class="principle"><span>Ship fast.</span> Iterate weekly.</div>
+        <div class="principle"><span>Real users</span> before big features.</div>
+        <div class="principle"><span>Measure everything.</span> NPS + hours saved + frequency.</div>
+        <div class="principle"><span>IA-augmented</span> development — 1 CTO moves like a team of 5.</div>
+        <div class="principle"><span>25h/week</span> sustainable pace → 850h total over 8 months.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 5 · FUNDING STRATEGY
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s5" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:420px;height:420px;background:linear-gradient(135deg,var(--blue),#6d28d9);bottom:-100px;right:-80px;opacity:0.09;filter:blur(90px);"></div>
+
+      <div class="s5-header">
+        <div class="eyebrow">Financial Strategy</div>
+        <h2>Maximum capital. <span class="accent-blue">Minimum dilution.</span></h2>
+      </div>
+
+      <div class="funding-grid">
+        <div class="f-card">
+          <div class="f-stage">Stage 0 · Quick Wins</div>
+          <div class="f-timeline">April – May 2026</div>
+          <div class="f-amount">$350K</div>
+          <div class="f-equity eq-zero">0% Equity · Non-dilutive</div>
+          <ul class="f-items">
+            <li>Google for Startups — $200K cloud credits (Vertex AI, Cloud Run)</li>
+            <li>Microsoft for Startups — $150K Azure credits + GitHub Copilot</li>
+            <li>Apply now → response in 1–4 weeks. No company needed.</li>
+          </ul>
+        </div>
+
+        <div class="f-card">
+          <div class="f-stage">Stage 1 · Seed Nacional</div>
+          <div class="f-timeline">June – October 2026</div>
+          <div class="f-amount">€100–150K</div>
+          <div class="f-equity eq-zero">0% Equity · Grants only</div>
+          <ul class="f-items">
+            <li>Madrid Emprende — €10–30K a fondo perdido (social impact angle)</li>
+            <li>Cheque Innovación Madrid — €10–25K (research UPM partnership)</li>
+            <li>ENISA Jóvenes Emprendedores — €25–75K favourable loan</li>
+            <li>FEB Partnership — €5–15K + official endorsement (2,847 clubs)</li>
+          </ul>
+        </div>
+
+        <div class="f-card">
+          <div class="f-stage">Stage 2 · Growth España</div>
+          <div class="f-timeline">Nov 2026 – Feb 2027</div>
+          <div class="f-amount">€250–500K</div>
+          <div class="f-equity eq-low">0–10% Equity (optional)</div>
+          <ul class="f-items">
+            <li>CDTI NEOTEC — €250–500K (70% loan + 30% grant)</li>
+            <li>CSD Deporte Base — €20–50K sports innovation grant</li>
+            <li>Lanzadera — €50–150K if strong traction (5–10% equity)</li>
+            <li>Use: +1 team hire, 200 clubs outreach, analytics dashboard</li>
+          </ul>
+        </div>
+
+        <div class="f-card spotlight">
+          <div class="f-stage">Stage 3 · EIC Accelerator</div>
+          <div class="f-timeline">Submit Nov 6, 2026 → Funding Q3 2027</div>
+          <div class="f-amount">€2.5M</div>
+          <div class="f-equity eq-opt">+ €15M equity option</div>
+          <ul class="f-items">
+            <li>European Innovation Council grant — no repayment required</li>
+            <li>Optional: up to €15M equity instrument from EIC Fund</li>
+            <li>Use: 5-country expansion, 500 clubs, 15-person team</li>
+            <li>Plan B: ENISA + CDTI if rejected → reapply March 2027</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="funding-totals">
+        <div class="ft-item">
+          <div class="ft-num">$350K</div>
+          <div class="ft-lbl">Cloud credits (no equity)</div>
+        </div>
+        <div class="ft-div"></div>
+        <div class="ft-item">
+          <div class="ft-num">€900K+</div>
+          <div class="ft-lbl">Cash grants &amp; loans</div>
+        </div>
+        <div class="ft-div"></div>
+        <div class="ft-item">
+          <div class="ft-num">€2.5M</div>
+          <div class="ft-lbl">EIC Accelerator target</div>
+        </div>
+        <div class="ft-div"></div>
+        <div class="ft-item">
+          <div class="ft-num">0–15%</div>
+          <div class="ft-lbl">Total equity diluted (21 months)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 5B · MADRID EMPRENDE APPLICATION
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s5b" class="slide" style="flex-direction:column; padding:32px 72px 28px;">
+      <div class="blob" style="width:420px;height:420px;background:linear-gradient(135deg,#dc2626,#f59e0b);top:-100px;left:-80px;opacity:0.07;filter:blur(90px);pointer-events:none;"></div>
+      <div class="blob" style="width:320px;height:320px;background:var(--blue);bottom:-80px;right:-60px;opacity:0.07;filter:blur(80px);pointer-events:none;"></div>
+
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;margin-bottom:18px;gap:24px;">
+        <div>
+          <div class="eyebrow">First Grant · Already in Draft</div>
+          <h2>Madrid Emprende 2026 — <span class="accent-red">€10–22K a fondo perdido</span></h2>
+          <p style="font-size:0.88rem;margin-top:6px;max-width:700px;">Subvención del Ayuntamiento de Madrid. Cero equity, cero devolución. El ángulo ganador: <strong style="color:#fff;">impacto social</strong> — democratizar el conocimiento técnico en los clubes de barrio madrileños.</p>
+        </div>
+        <div style="flex-shrink:0;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:14px;padding:14px 22px;text-align:center;min-width:130px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#4ade80;margin-bottom:6px;">Draft Status</div>
+          <div style="font-size:2rem;line-height:1;">📝</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;margin-top:6px;">v1.1 Ready</div>
+          <div style="font-size:9.5px;color:var(--muted);margin-top:2px;">Memoria Técnica<br>+ Presupuesto</div>
+        </div>
+      </div>
+
+      <!-- Three content columns -->
+      <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:14px;flex-shrink:0;margin-bottom:14px;">
+
+        <!-- Col 1: The narrative -->
+        <div class="card" style="padding:16px 18px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#f87171;margin-bottom:10px;">🏙️ The Winning Angle</div>
+          <ul class="mvp-list">
+            <li>Not "an AI basketball app" — a <strong style="color:#fff;">social cohesion engine</strong> for Madrid's neighbourhoods</li>
+            <li>Neighbourhood clubs get the same knowledge as Real Madrid's cantera — AI as equaliser</li>
+            <li>Supports unpaid volunteers (parents, young coaches) — digital third sector</li>
+            <li>Madrid as an international <strong style="color:#fff;">showcase / freemium testbed</strong> before European scale</li>
+            <li>Aligns with Madrid's innovation + youth sport policy priorities</li>
+          </ul>
+        </div>
+
+        <!-- Col 2: Budget breakdown -->
+        <div class="card" style="padding:16px 18px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:10px;">💶 Budget ~€22,480</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:10px;font-weight:700;color:var(--blue);">10% — Legal &amp; Structure</div>
+              <div style="font-size:0.78rem;color:var(--muted);">SL constitution, GDPR compliance (minors), accounting</div>
+            </div>
+            <div style="background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:10px;font-weight:700;color:#fb923c;">40% — Operations &amp; Local Marketing</div>
+              <div style="font-size:0.78rem;color:var(--muted);">BD travel, club visits, events, design materials, early adopter push</div>
+            </div>
+            <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.18);border-radius:8px;padding:8px 10px;">
+              <div style="font-size:10px;font-weight:700;color:#4ade80;">50% — Pilot + I+D Alliances</div>
+              <div style="font-size:0.78rem;color:var(--muted);">Villanueva onboarding, coach training resources, UAX academic partnership</div>
+            </div>
+            <div style="font-size:9.5px;color:var(--muted);margin-top:4px;padding-left:4px;">☁️ Cloud infra: €0 (covered by Google + Microsoft credits)</div>
+          </div>
+        </div>
+
+        <!-- Col 3: Team + next steps -->
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#c4b5fd;margin-bottom:2px;">👥 Team as Presented</div>
+          <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:3px;">Founder &amp; CEO / CTO</div>
+            <div style="font-size:0.78rem;color:var(--muted);">Tech lead + Basketball Coach Nivel II. Ensures the AI solves a real pedagogical problem he lives on the court.</div>
+          </div>
+          <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:3px;">COO / Business Developer</div>
+            <div style="font-size:0.78rem;color:var(--muted);">Market opening, club &amp; federation outreach, strategic alliances. The bridge to Madrid's sporting ecosystem.</div>
+          </div>
+          <div style="margin-top:auto;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:8px;padding:10px 12px;">
+            <div style="font-size:10px;font-weight:700;color:#4ade80;margin-bottom:4px;">⏱ Next Actions</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:4px;">
+              <li style="font-size:0.78rem;color:var(--muted);display:flex;gap:6px;"><span style="color:#4ade80;flex-shrink:0;">→</span>Review &amp; finalise Memoria Técnica draft</li>
+              <li style="font-size:0.78rem;color:var(--muted);display:flex;gap:6px;"><span style="color:#4ade80;flex-shrink:0;">→</span>Complete budget spreadsheet (Excel)</li>
+              <li style="font-size:0.78rem;color:var(--muted);display:flex;gap:6px;"><span style="color:#4ade80;flex-shrink:0;">→</span>Submit as soon as call opens (May 2026)</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom callout -->
+      <div style="background:linear-gradient(135deg,rgba(220,38,38,0.08),rgba(245,158,11,0.05));border:1px solid rgba(220,38,38,0.22);border-radius:12px;padding:11px 24px;text-align:center;flex-shrink:0;">
+        <p style="font-size:0.88rem;font-weight:600;color:#fff;">This grant is the <span style="color:#fb923c;">operational bridge</span> for 2026 — covering constitution + local BD while Google/Microsoft credits cover all infrastructure. Zero dilution, zero debt.</p>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 6 · VISIBILITY STRATEGY
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s6" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:360px;height:360px;background:var(--red);top:-80px;left:-60px;opacity:0.08;filter:blur(80px);"></div>
+
+      <div class="s6-header">
+        <div class="eyebrow">Visibility &amp; Alliances</div>
+        <h2>Build the product. <span class="accent-red">Show it everywhere.</span></h2>
+      </div>
+
+      <div class="vis-grid">
+        <div>
+          <div class="vis-col-head">🏆 Startup Competitions</div>
+          <div class="vis-items">
+            <div class="vi">
+              <div class="vi-icon">🏙️</div>
+              <div class="vi-body">
+                <h5>South Summit Madrid 2026</h5>
+                <p>Spain's top startup event (IFEMA, ~10K attendees). Apply April–May. Education/AI vertical. Direct exposure to VCs and corporate sponsors.</p>
+              </div>
+            </div>
+            <div class="vi">
+              <div class="vi-icon">🌊</div>
+              <div class="vi-body">
+                <h5>Valencia Digital Summit — Startup Competition</h5>
+                <p>Fast-growing international tech event. Apply by June. Strong for Seed projects. Attracts Telefónica, sports corporates as innovation scouts.</p>
+              </div>
+            </div>
+            <div class="vi">
+              <div class="vi-icon">🏦</div>
+              <div class="vi-body">
+                <h5>Santander X Spain Awards</h5>
+                <p>University-backed, Santander sponsored. Multiple prizes €4K–€10K each, a fondo perdido. Apply April–May. Massive PR reach.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="vis-col-head red">🤝 Strategic Alliances</div>
+          <div class="vis-items">
+            <div class="vi">
+              <div class="vi-icon">🇪🇸</div>
+              <div class="vi-body">
+                <h5>FEB — Federación Española de Baloncesto</h5>
+                <p>Official endorsement = instant credibility with all 2,847 Spanish clubs. Contact Director Área Formativa April → agreement by June.</p>
+              </div>
+            </div>
+            <div class="vi">
+              <div class="vi-icon">🎓</div>
+              <div class="vi-body">
+                <h5>UAX — Universidad Alfonso X el Sabio</h5>
+                <p>Academic partnership: co-research on sports science + AI. Strengthens EIC academic excellence narrative. Located in Villanueva area.</p>
+              </div>
+            </div>
+            <div class="vi">
+              <div class="vi-icon">🏟️</div>
+              <div class="vi-body">
+                <h5>Business Factory Sport (Galicia Sportech)</h5>
+                <p>Spain's top sports accelerator. Up to €25K grant + ecosystem access. Network with Iker Casillas' SportBoost for demo day opportunities.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vis-callout">
+        <p>Strategy: <span>Win competitions with real data from Villanueva.</span> Use prize funding + media coverage to land FEB endorsement. Use FEB to land EIC.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 7 · 2026 MILESTONES
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s7" class="slide" style="flex-direction:column;">
+      <div class="blob" style="width:500px;height:500px;background:linear-gradient(135deg,var(--blue),#6d28d9);bottom:-150px;right:-80px;opacity:0.08;filter:blur(100px);"></div>
+
+      <div class="s7-header">
+        <div class="eyebrow">2026 Roadmap</div>
+        <h2>Eight months. <span class="accent-blue">One mission.</span></h2>
+      </div>
+
+      <div class="tl-track">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">April</div>
+            <h4>Foundations</h4>
+            <p>Ontology schema, RAG pipeline, apply Google &amp; Microsoft credits</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">May</div>
+            <h4>Technical Prototype</h4>
+            <p>RAG + citation lineage demo working. 100→500 ontology concepts. Internal testing.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">June</div>
+            <h4>Full MVP KB</h4>
+            <p>WhatsApp bot functional. 200+ exercises structured. GDPR compliance designed.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">July</div>
+            <h4>Summer Pilot</h4>
+            <p>3–5 coaches at Villanueva de la Cañada using KB. Weekly feedback loops.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">August</div>
+            <h4>Web Launch</h4>
+            <p>Club web portal live (Aug 15–25). Intensive testing before new season.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">September</div>
+            <h4>Live Season</h4>
+            <p>New basketball season starts with KB in production. Real usage metrics. NPS &gt;8 target.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-box">
+            <div class="tl-month">October</div>
+            <h4>Expansion + LOIs</h4>
+            <p>20 clubs contacted. 3–5 Letters of Intent secured. South Summit demo.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot crit"></div>
+          <div class="tl-box" style="border-color:rgba(204,16,32,0.35);background:linear-gradient(135deg,rgba(204,16,32,0.07),rgba(204,16,32,0.03));">
+            <div class="tl-month red">Nov 6</div>
+            <h4>🚀 EIC Submission</h4>
+            <p>EIC Accelerator short proposal submitted — 17:00 CET deadline.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-metrics">
+        <div class="tl-metric">Target NPS: <strong>&gt;8</strong></div>
+        <div class="tl-metric">Active coaches by Sept: <strong>5–8</strong></div>
+        <div class="tl-metric">LOIs by October: <strong>3–5</strong></div>
+        <div class="tl-metric">Ontology concepts: <strong>2,000+</strong></div>
+        <div class="tl-metric">Total effort: <strong>~850h</strong> at 25h/week</div>
+        <div class="tl-metric">Total budget: <strong>€1,500–2,500</strong> cash + credits</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 8 · MVP HITO 1: CLUB VILLANUEVA
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s8" class="slide mvp-slide">
+      <div class="blob" style="width:440px;height:440px;background:linear-gradient(135deg,var(--blue),#6d28d9);top:-100px;left:-100px;opacity:0.1;filter:blur(90px);"></div>
+      <div class="blob" style="width:300px;height:300px;background:var(--wa-green);bottom:-80px;right:100px;opacity:0.07;filter:blur(80px);"></div>
+
+      <div class="mvp-left">
+        <div class="mvp-hito">Milestone 1 · July–September 2026</div>
+        <h2>First real deployment:<br><span class="accent-blue">Club Villanueva<br>de la Cañada</span></h2>
+        <p>Our own club becomes the first live user of BasketIQ — the proof of value that everything else is built on. Real coaches, real problems, real season.</p>
+        <div class="mvp-badges">
+          <span class="badge badge-blue">Epic 3: V1 Implementation</span>
+          <span class="badge badge-green">Pilot — Free 6 months</span>
+          <span class="badge badge-purple">UAX proximity advantage</span>
+        </div>
+      </div>
+
+      <div class="mvp-right">
+        <div class="mvp-sub-card">
+          <h4>What we're building</h4>
+          <ul class="mvp-list">
+            <li>WhatsApp bot connected to KB — fully functional, production-grade</li>
+            <li>Knowledge Base: 200+ structured exercises with progressions</li>
+            <li>RAG + citation lineage — every answer sourced and auditable</li>
+            <li>GDPR-compliant design for under-18 player data</li>
+            <li>Operational layer: training sessions, attendance via WhatsApp</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4>Success Criteria</h4>
+          <ul class="mvp-list">
+            <li>3–5 coaches using KB weekly — unprompted, habitual usage</li>
+            <li>NPS &gt;8 — coaches would recommend to other clubs</li>
+            <li>Documented time savings (before/after comparison)</li>
+            <li>System stability — zero critical failures in 6-week period</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4>Outputs for next milestones</h4>
+          <ul class="mvp-list">
+            <li>3 coach video testimonials (2–3 min each, professional)</li>
+            <li>Quantified case study: hours saved, NPS, engagement data</li>
+            <li>Demo-ready product for competition stage (Hito 2)</li>
+            <li>Proof data required for EIC short proposal (Hito 3)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 9 · MVP HITO 2: STARTUP COMPETITIONS
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s9" class="slide mvp-slide">
+      <div class="blob" style="width:420px;height:420px;background:var(--red);top:-80px;right:-80px;opacity:0.08;filter:blur(90px);"></div>
+      <div class="blob" style="width:320px;height:320px;background:var(--blue);bottom:-80px;left:80px;opacity:0.08;filter:blur(80px);"></div>
+
+      <div class="mvp-left">
+        <div class="mvp-hito">Milestone 2 · October–November 2026</div>
+        <h2>Startup competitions:<br><span class="accent-red">visibility,<br>micro-funding, proof</span></h2>
+        <p>Use Villanueva's real data to enter Spain's top startup competitions. Prizes are secondary — the visibility, investor exposure, and external validation are the primary goal.</p>
+        <div class="mvp-badges">
+          <span class="badge badge-red">Epic 6: V2 Showcase</span>
+          <span class="badge badge-yellow">€5K–20K prize potential</span>
+          <span class="badge badge-blue">EIC narrative builder</span>
+        </div>
+      </div>
+
+      <div class="mvp-right">
+        <div class="mvp-sub-card">
+          <h4>What we'll show at competitions</h4>
+          <ul class="mvp-list">
+            <li>Live demo — real WhatsApp interaction with the KB</li>
+            <li>Villanueva case study — quantified NPS + hours saved + usage</li>
+            <li>Coach video testimonial — 2 min, authentic, on screen</li>
+            <li>Market size: 35,000+ clubs across Europe, TAM quantified</li>
+            <li>Team: CEO/CTO + Sales lead + advisory board</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4>Target competitions &amp; timing</h4>
+          <ul class="mvp-list">
+            <li>South Summit Madrid — apply April/May, event October 2026</li>
+            <li>Valencia Digital Summit — apply by June, event Autumn 2026</li>
+            <li>Santander X Spain Awards — apply April/May, multiple cash prizes</li>
+            <li>Business Factory Sport — demo day for sportech ecosystem</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4>Strategic value beyond prizes</h4>
+          <ul class="mvp-list">
+            <li>FEB endorsement easier after public competition wins</li>
+            <li>LOIs from clubs that see product working at events</li>
+            <li>"Competition finalist" = credibility line in EIC proposal</li>
+            <li>Investor pipeline for Lanzadera / ENISA conversations</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SLIDE 10 · MVP HITO 3: EU EIC ACCELERATOR
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <section id="s10" class="slide mvp-slide">
+      <div class="blob" style="width:500px;height:500px;background:linear-gradient(135deg,var(--blue),#6d28d9);bottom:-120px;right:-100px;opacity:0.12;filter:blur(100px);"></div>
+
+      <div class="mvp-left">
+        <div class="mvp-hito">Milestone 3 · Submit November 6, 2026</div>
+        <h2>EU EIC Accelerator:<br><span class="accent-blue">€2.5M to<br>dominate Europe</span></h2>
+        <p>The European Innovation Council Accelerator funds the best deep-tech and AI companies in Europe. Our entire 8-month plan is designed to produce a winning submission.</p>
+        <div class="eic-stats">
+          <div class="eic-stat">
+            <div class="es-num">€2.5M</div>
+            <div class="es-lbl">Grant (non-repayable)</div>
+          </div>
+          <div class="eic-stat">
+            <div class="es-num">€15M</div>
+            <div class="es-lbl">Optional equity instrument</div>
+          </div>
+          <div class="eic-stat">
+            <div class="es-num">Nov 6</div>
+            <div class="es-lbl">Submission deadline</div>
+          </div>
+          <div class="eic-stat">
+            <div class="es-num">Q3 '27</div>
+            <div class="es-lbl">Expected first payment</div>
+          </div>
+        </div>
+        <div class="plan-b-box">
+          <h4>Plan B (if EIC rejects)</h4>
+          <p>ENISA + CDTI provide €250–500K to scale Spain. Reapply EIC Cut-off #3 (March 2027) with more traction data. EIC rejection rate is ~80% on first attempt — this plan accounts for it.</p>
+        </div>
+      </div>
+
+      <div class="mvp-right">
+        <div class="mvp-sub-card">
+          <h4>What makes a winning EIC proposal</h4>
+          <ul class="mvp-list">
+            <li>Real usage metrics from Villanueva (NPS, weekly active users, time saved)</li>
+            <li>3–5 Letters of Intent from external clubs ready to pay</li>
+            <li>Technical excellence: ontology depth, RAG precision, architecture paper</li>
+            <li>Market size: Europe TAM with official FIBA / Eurobasket sources</li>
+            <li>Team: CEO+CTO capability + advisory board credibility</li>
+            <li>First-mover position: no comparable product in Europe</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4 class="red">Post-submission timeline</h4>
+          <ul class="tl-list">
+            <li><span class="tl-d">Nov 6, 2026</span>Short Proposal submitted (17:00 CET)</li>
+            <li><span class="tl-d">Jan–Feb 2027</span>Short Proposal result announced</li>
+            <li><span class="tl-d">Feb 2027</span>Full Proposal (30 days to prepare)</li>
+            <li><span class="tl-d">Apr–May 2027</span>Interview Panel — Brussels or remote</li>
+            <li><span class="tl-d">Jun–Jul 2027</span>Funding decision confirmed</li>
+            <li><span class="tl-d">Q3 2027</span>Grant Agreement signed → first payment</li>
+          </ul>
+        </div>
+        <div class="mvp-sub-card">
+          <h4>If funded: use of €2.5M</h4>
+          <ul class="mvp-list">
+            <li>Expand to 5 European markets (Germany priority — strongest basketball culture)</li>
+            <li>Team: 15 people (tech, sales, CS, content, multilingual)</li>
+            <li>R&amp;D: video analysis AI, predictive analytics, multi-language ontology</li>
+            <li>Target: 500 clubs across Europe, partnerships with FIBA Europe federations</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /deck -->
+
+  <!-- ─── Script ─────────────────────────────────────────────────────────── -->
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const deck   = document.getElementById('deck');
+    const nav    = document.getElementById('dotNav');
+    const ctr    = document.getElementById('counter');
+    const total  = slides.length;
+
+    /* Build dot nav */
+    slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', `Slide ${i + 1}`);
+      btn.addEventListener('click', () => {
+        slides[i].scrollIntoView({ behavior: 'smooth' });
+      });
+      nav.appendChild(btn);
+    });
+
+    const dots = document.querySelectorAll('.dot');
+
+    /* IntersectionObserver to track active slide */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const idx = Array.from(slides).indexOf(entry.target);
+          dots.forEach(d => d.classList.remove('active'));
+          dots[idx].classList.add('active');
+          ctr.textContent = `${idx + 1} / ${total}`;
+        }
+      });
+    }, { root: deck, threshold: 0.5 });
+
+    slides.forEach(s => observer.observe(s));
+
+    /* Keyboard navigation */
+    document.addEventListener('keydown', e => {
+      const activeIdx = Array.from(dots).findIndex(d => d.classList.contains('active'));
+      if ((e.key === 'ArrowDown' || e.key === 'PageDown') && activeIdx < total - 1) {
+        e.preventDefault();
+        slides[activeIdx + 1].scrollIntoView({ behavior: 'smooth' });
+      }
+      if ((e.key === 'ArrowUp' || e.key === 'PageUp') && activeIdx > 0) {
+        e.preventDefault();
+        slides[activeIdx - 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+
+</body>
+</html>
