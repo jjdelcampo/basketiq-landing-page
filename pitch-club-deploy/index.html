@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BasketIQ — Presentación Club Baloncesto Villanueva de la Cañada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Login Gate ─────────────────────────────────────────────────── */
+    #login-gate {
+      position: fixed; inset: 0; z-index: 10000;
+      background: #0b0f19;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif;
+    }
+    .login-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 380px; max-width: 90vw;
+      text-align: center;
+    }
+    .login-logo {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-bottom: 8px;
+    }
+    .login-logo-mark {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #6d28d9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .login-logo-text { font-size: 1.6rem; font-weight: 800; color: #fff; }
+    .login-subtitle {
+      color: #94a3b8; font-size: 0.9rem; margin-bottom: 32px;
+    }
+    .login-field {
+      width: 100%; padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      color: #fff; font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .login-field::placeholder { color: #64748b; }
+    .login-field:focus { border-color: #3b82f6; }
+    .login-btn {
+      width: 100%; padding: 14px;
+      background: #3b82f6; color: #fff;
+      border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      margin-top: 6px;
+    }
+    .login-btn:hover { background: #2563eb; transform: translateY(-1px); }
+    .login-error {
+      display: none; color: #ef4444; font-size: 0.85rem;
+      margin-top: 14px;
+    }
+    .login-footer {
+      color: #475569; font-size: 0.75rem; margin-top: 24px;
+    }
+
+    /* ─── Pitch Styles ───────────────────────────────────────────────── */
+    :root {
+      --bg: #0b0f19;
+      --text: #ffffff;
+      --muted: #94a3b8;
+      --blue: #3b82f6;
+      --blue-dim: rgba(59,130,246,0.18);
+      --blue-glow: rgba(59,130,246,0.35);
+      --red: #cc1020;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.09);
+      --wa-green: #25d366;
+      --green: #10b981;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    #deck {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    #deck::-webkit-scrollbar { display: none; }
+
+    .slide {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    #dotNav {
+      position: fixed;
+      right: 22px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 999;
+    }
+    .dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+    .dot.active {
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue-glow);
+      transform: scale(1.35);
+    }
+
+    #counter {
+      position: fixed;
+      bottom: 20px; right: 44px;
+      font-size: 12px; color: var(--muted);
+      z-index: 999;
+    }
+
+    .eyebrow {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--blue); margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 4vw, 4.2rem);
+      font-weight: 800; line-height: 1.08; margin-bottom: 18px;
+    }
+    h2 {
+      font-size: clamp(1.9rem, 3vw, 2.8rem);
+      font-weight: 800; line-height: 1.12; margin-bottom: 14px;
+    }
+    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    p { color: var(--muted); line-height: 1.65; font-size: 0.95rem; }
+    .accent-blue { color: var(--blue); }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-blue { background: var(--blue-dim); color: var(--blue); }
+    .badge-green { background: rgba(16,185,129,0.12); color: var(--green); }
+
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.1;
+      pointer-events: none; z-index: 0;
+    }
+
+    .logo-hero {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .logo-mark {
+      width: 56px; height: 56px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), #6d28d9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .logo-text {
+      font-size: 2rem; font-weight: 800;
+    }
+
+    .two-col { display: flex; gap: 60px; align-items: center; width: 100%; max-width: 1400px; margin: 0 auto; }
+    .col-left { flex: 1; position: relative; z-index: 1; }
+    .col-right { flex: 1; position: relative; z-index: 1; }
+
+    .wa-window {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 28px 64px rgba(0,0,0,0.55);
+    }
+    .wa-header {
+      background: #1b6b5c;
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .wa-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #6d28d9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800;
+    }
+    .wa-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .wa-status { font-size: 11px; color: rgba(255,255,255,0.65); }
+    .wa-body {
+      background: #111b21;
+      padding: 16px;
+      min-height: 400px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .wa-row { display: flex; flex-direction: column; }
+    .wa-row.out { align-items: flex-end; }
+    .wa-row.in { align-items: flex-start; }
+    .wa-bubble {
+      max-width: 85%;
+      padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.55;
+    }
+    .wa-bubble.out { background: #005c4b; color: #e9f5f3; }
+    .wa-bubble.in { background: #202c33; color: #e9edef; }
+    .wa-meta { font-size: 10px; color: rgba(255,255,255,0.38); margin-top: 3px; }
+    .wa-label { font-size: 10px; color: #53bdeb; font-weight: 700; margin-bottom: 5px; }
+    .wa-list { list-style: none; margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .wa-list li {
+      font-size: 12px; color: #c8d3db;
+      padding-left: 10px; border-left: 2px solid var(--wa-green);
+    }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 18px; max-width: 1200px;
+    }
+    .feature-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+    .feature-icon { font-size: 42px; margin-bottom: 12px; }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(139,92,246,0.08));
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      max-width: 720px;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 14px 36px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s;
+      margin-top: 24px;
+    }
+    .cta-button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    .scenario-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 18px; max-width: 1200px; margin-top: 28px;
+    }
+    .scenario-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .scenario-icon { font-size: 36px; margin-bottom: 12px; }
+    .scenario-card h3 { font-size: 1rem; color: #fff; margin-bottom: 8px; }
+    .scenario-card p { font-size: 0.85rem; }
+    .scenario-card ul {
+      list-style: none;
+      margin-top: 12px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .scenario-card li {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding-left: 10px;
+      border-left: 2px solid var(--blue);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ LOGIN GATE ═══════════════ -->
+  <div id="login-gate">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="login-logo-mark">🏀</div>
+        <span class="login-logo-text">BasketIQ</span>
+      </div>
+      <p class="login-subtitle">Presentación privada · Club Baloncesto Villanueva de la Cañada</p>
+      <form id="login-form" autocomplete="off">
+        <input class="login-field" id="user-input" type="text" placeholder="Usuario" autofocus />
+        <input class="login-field" id="pass-input" type="password" placeholder="Contraseña" />
+        <button class="login-btn" type="submit">Acceder</button>
+        <p class="login-error" id="login-error">Usuario o contraseña incorrectos</p>
+      </form>
+      <p class="login-footer">Acceso restringido · Abril 2026</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PITCH CONTENT ═══════════════ -->
+  <div id="pitch-wrap" style="display:none;">
+
+  <nav id="dotNav"></nav>
+  <div id="counter">1 / 11</div>
+
+  <div id="deck">
+
+    <!-- ══ SLIDE 1: Hero ══ -->
+    <section id="s1" class="slide" style="flex-direction: column; text-align: center;">
+      <div class="blob" style="width:500px;height:500px;background:linear-gradient(135deg,var(--blue),#6d28d9);top:-150px;left:-100px;"></div>
+      <div class="blob" style="width:400px;height:400px;background:var(--red);bottom:-100px;right:-150px;"></div>
+
+      <div class="logo-hero">
+        <div class="logo-mark">🏀</div>
+        <span class="logo-text">BasketIQ</span>
+      </div>
+      <div class="eyebrow">Presentación Club Baloncesto Villanueva de la Cañada</div>
+      <h1>Tu asistente inteligente<br>para el día a día del <span class="accent-blue">club</span></h1>
+      <p style="max-width: 720px; margin: 0 auto 32px; font-size: 1.2rem;">
+        Una inteligencia artificial que responde tus preguntas, te ayuda a planificar y te ahorra horas de trabajo. 
+        Todo desde WhatsApp.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Pregunta y obtén respuestas</h3>
+          <p>Ejercicios, progresiones, correcciones. Como hablar con un experto.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Organiza tu temporada</h3>
+          <p>Planificación, scouting, evaluaciones. Todo en un mismo lugar.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Ahorra tiempo</h3>
+          <p>Deja que la IA haga el trabajo pesado. Céntrate en entrenar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 2: Quick Win #1 ══ -->
+    <section id="s2" class="slide" style="flex-direction: column; text-align: center;">
+      <div class="blob" style="width:500px;height:500px;background:var(--blue);top:-100px;left:50%;transform:translateX(-50%);opacity:0.1;"></div>
+      
+      <div class="eyebrow">Quick Win #1: Preparación y Ejecución de Entrenamientos</div>
+      <h2>La IA que conoce tu <span class="accent-blue">contexto</span></h2>
+      <p style="max-width: 800px; margin: 0 auto 32px;">
+        BasketIQ no solo responde preguntas. Conoce tu programa, tu progresión y adapta las recomendaciones a donde estás y hacia dónde vas.
+      </p>
+      <div class="features-grid" style="max-width: 1100px;">
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Consulta de ejercicios</h3>
+          <p>Con contexto de tu programación y nivel del equipo</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <h3>Progresiones inteligentes</h3>
+          <p>Sabe qué habéis trabajado y qué viene después</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💪</div>
+          <h3>Preparación física</h3>
+          <p>Trabajo aeróbico, fuerza, agilidad adaptado a edad</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Feedback continuo</h3>
+          <p>Ajusta la programación según tus observaciones</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3>Gestión asistencias</h3>
+          <p>Control de quién viene y adapta los grupos</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Registro post-sesión</h3>
+          <p>Reflexión sobre qué funcionó para mejorar</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 3: Ejemplo 1 — Contexto ══ -->
+    <section id="s2b" class="slide two-col">
+      <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-80px;left:-100px;opacity:0.08;"></div>
+      
+      <div class="col-left">
+        <div class="eyebrow">Ejemplo 1: Contexto de Programación</div>
+        <h2>La IA conoce<br>tu <span class="accent-blue">progresión</span></h2>
+        <p style="margin-bottom: 20px;">
+          Es miércoles por la tarde. Necesitas ejercicios para tu Sub-14. La IA sabe que llevas 3 semanas trabajando defensa individual y que el objetivo del mes es transiciones.
+        </p>
+        <div class="card" style="background: rgba(59,130,246,0.08); margin-bottom: 14px;">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">🧠 Contexto que tiene la IA:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• Equipo: Sub-14 Masculino</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Mes actual: Septiembre (pretemporada)</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Semanas previas: Defensa individual (postura, desplazamientos)</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Objetivo del mes: Transiciones defensa-ataque</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Próxima sesión: Miércoles 18:00-19:30h</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p style="font-size: 0.88rem; color: #fff;">
+            <strong style="color: var(--blue);">💡 Diferencia clave:</strong> No te da ejercicios genéricos. Te da LA PROGRESIÓN LÓGICA basada en lo que ya habéis trabajado.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Disponible 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body" style="min-height: 520px;">
+            <div class="wa-row out">
+              <div class="wa-bubble out">Necesito ejercicios para mañana, defensa y transiciones</div>
+              <div class="wa-meta">16:15</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in" style="background: rgba(59,130,246,0.15);">
+                <div class="wa-label">📊 Contexto detectado</div>
+                Sub-14 · Miércoles 18:00h<br>
+                Llevas 3 semanas en defensa individual.<br>
+                Objetivo mes: transiciones def-ataque
+              </div>
+              <div class="wa-meta">16:15</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Progresión Sugerida</div>
+                Perfecto momento para <strong>conectar defensa con transición</strong>. Progresión:
+                <ul class="wa-list">
+                  <li><strong>Calentamiento (10'):</strong> Desplazamientos defensivos + sprint</li>
+                  <li><strong>Drill 1 (15'):</strong> 1c1 → contraataque 1c0</li>
+                  <li><strong>Drill 2 (20'):</strong> 2c2 → rebote def → transición 2c1</li>
+                  <li><strong>Drill 3 (15'):</strong> 3c3 media pista con reglas transición</li>
+                  <li><strong>Juego (25'):</strong> 5c5 con bonus puntos en transición</li>
+                </ul>
+                <div style="margin-top: 8px; padding: 8px; background: rgba(16,185,129,0.1); border-radius: 6px; font-size: 11px;">
+                  ✓ Conecta con trabajo previo de defensa individual<br>
+                  ✓ Introduce objetivo del mes (transiciones)<br>
+                  ✓ Progresión lógica: 1c1 → 2c2 → 3c3 → 5c5
+                </div>
+              </div>
+              <div class="wa-meta">16:16</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 4: Ejemplo 2 — Prep. Física ══ -->
+    <section id="s2c" class="slide two-col">
+      <div class="blob" style="width:400px;height:400px;background:var(--green);bottom:-100px;right:-100px;opacity:0.08;"></div>
+      
+      <div class="col-left">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Disponible 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body" style="min-height: 500px;">
+            <div class="wa-row out">
+              <div class="wa-bubble out">Necesito trabajo físico específico para Sub-16 en pretemporada</div>
+              <div class="wa-meta">09:12</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Preparación Física Sub-16</div>
+                Para Sub-16 en pretemporada, priorizamos <strong>base aeróbica + fuerza funcional</strong>:
+                <ul class="wa-list">
+                  <li><strong>Aeróbico:</strong> Intervalos pista entera (30"/30" x 8 series)</li>
+                  <li><strong>Fuerza tren inferior:</strong> Sentadillas, lunges, saltos (3x12)</li>
+                  <li><strong>Core:</strong> Planks, russian twist (3x30")</li>
+                  <li><strong>Agilidad:</strong> Escalera coordinación + cambios dirección</li>
+                </ul>
+                <div style="margin-top: 8px; padding: 8px; background: rgba(251,191,36,0.1); border-radius: 6px; font-size: 11px;">
+                  ⚠️ Sub-16: Ya pueden hacer fuerza supervisada.<br>
+                  Ratio: 60% aeróbico, 30% fuerza, 10% flexibilidad.
+                </div>
+              </div>
+              <div class="wa-meta">09:13</div>
+            </div>
+            <div class="wa-row out">
+              <div class="wa-bubble out">¿Y para Sub-12? Tengo ese equipo también</div>
+              <div class="wa-meta">09:14</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Preparación Física Sub-12</div>
+                <strong>Sub-12 es diferente</strong> — prioridad en <strong>desarrollo motor y diversión</strong>:
+                <ul class="wa-list">
+                  <li><strong>Juegos aeróbicos:</strong> Relevos, pilla-pilla con balón</li>
+                  <li><strong>Saltos y coordinación:</strong> Comba, saltos a una pierna</li>
+                  <li><strong>Fuerza con peso corporal:</strong> Animales (rana, cangrejo, oso)</li>
+                  <li><strong>NO fuerza con cargas</strong> — demasiado jóvenes</li>
+                </ul>
+                <div style="margin-top: 8px; padding: 8px; background: rgba(16,185,129,0.1); border-radius: 6px; font-size: 11px;">
+                  ✓ OMS recomienda: 60 min/día actividad moderada-vigorosa<br>
+                  ✓ Fuerza ósea 3 días/semana (saltos, no cargas)
+                </div>
+              </div>
+              <div class="wa-meta">09:15</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="eyebrow">Ejemplo 2: Preparación Física</div>
+        <h2>Trabajo físico<br><span class="accent-blue">adaptado</span> a la edad</h2>
+        <p style="margin-bottom: 20px;">
+          La IA conoce las recomendaciones de OMS, NSCA y federaciones. No es lo mismo Sub-12 (juegos y peso corporal) que Sub-16 (ya pueden hacer fuerza supervisada).
+        </p>
+        <div class="card" style="margin-bottom: 14px;">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">📚 Fuentes Integradas:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• OMS: Recomendaciones actividad física 5-17 años</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• NSCA: Youth Resistance Training (seguridad)</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• USA Basketball: Ratios entreno/competición</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Swedish Framework: Desarrollo físico por etapas</li>
+          </ul>
+        </div>
+        <div class="card" style="background: rgba(59,130,246,0.08);">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">⚡ Diferencias Clave por Edad:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);"><strong style="color: #fff;">Sub-10/12:</strong> Juegos, coordinación, NO cargas</li>
+            <li style="font-size: 0.88rem; color: var(--muted);"><strong style="color: #fff;">Sub-14:</strong> Base aeróbica, introducir fuerza ligera</li>
+            <li style="font-size: 0.88rem; color: var(--muted);"><strong style="color: #fff;">Sub-16/18:</strong> Fuerza funcional, potencia, prevención</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 5: Ejemplo 3 — Feedback ══ -->
+    <section id="s2d" class="slide two-col">
+      <div class="blob" style="width:400px;height:400px;background:#f59e0b;top:-80px;right:-100px;opacity:0.08;"></div>
+      
+      <div class="col-left">
+        <div class="eyebrow">Ejemplo 3: Feedback y Ajuste</div>
+        <h2>La IA aprende<br>de tu <span class="accent-blue">feedback</span></h2>
+        <p style="margin-bottom: 20px;">
+          Después de cada sesión, le cuentas a la IA qué funcionó y qué no. Esto ajusta automáticamente la programación futura.
+        </p>
+        <div class="card" style="margin-bottom: 14px; background: rgba(59,130,246,0.08);">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">🔄 Ciclo de Mejora Continua:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">1. <strong style="color: #fff;">Planificas</strong> la sesión con IA</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">2. <strong style="color: #fff;">Ejecutas</strong> el entrenamiento</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">3. <strong style="color: #fff;">Registras</strong> feedback post-sesión</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">4. <strong style="color: #fff;">IA ajusta</strong> próximas sesiones</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p style="font-size: 0.88rem; color: #fff;">
+            <strong style="color: var(--green);">✓ Resultado:</strong> Tu programación mejora cada semana. No repites errores. La IA adapta el ritmo al nivel real del equipo.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Disponible 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body" style="min-height: 480px;">
+            <div class="wa-row out">
+              <div class="wa-bubble out">El drill de 2c2 con transición de ayer fue muy caótico. Los chicos no entendían cuándo empezaba la transición</div>
+              <div class="wa-meta">Jueves 20:15</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Registro y Ajuste</div>
+                Gracias por el feedback. He registrado:<br>
+                <strong>"Drill 2c2→transición: caótico, falta claridad en inicio"</strong>
+                <br><br>
+                <strong>Ajuste sugerido para próxima vez:</strong>
+                <ul class="wa-list">
+                  <li>Añadir señal clara: rebote defensivo = START transición</li>
+                  <li>Simplificar: 2c2 media pista primero, luego pista completa</li>
+                  <li>Regresión: Hacer primero 2c1 (ventaja numérica)</li>
+                </ul>
+              </div>
+              <div class="wa-meta">20:16</div>
+            </div>
+            <div class="wa-row out">
+              <div class="wa-bubble out">Perfecto. ¿Y para la semana que viene?</div>
+              <div class="wa-meta">20:17</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Plan Ajustado</div>
+                He modificado tu programación:<br><br>
+                <strong>Lunes:</strong> Repetir 2c1 controlado (ventaja)<br>
+                <strong>Miércoles:</strong> 2c2 media pista con señal clara<br>
+                <strong>Viernes:</strong> Si funciona, probar pista completa
+                <div style="margin-top: 8px; padding: 8px; background: rgba(59,130,246,0.1); border-radius: 6px; font-size: 11px;">
+                  📊 Progresión ajustada basada en tu feedback.<br>
+                  No avanzamos hasta dominar el paso anterior.
+                </div>
+              </div>
+              <div class="wa-meta">20:17</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 6: Ejemplo 4 — Crónicas ══ -->
+    <section id="s2e" class="slide two-col">
+      <div class="blob" style="width:400px;height:400px;background:#a855f7;bottom:-100px;left:-100px;opacity:0.08;"></div>
+      
+      <div class="col-left">
+        <div class="eyebrow">Ejemplo 4: Crónicas Postpartido</div>
+        <h2>Genera crónicas<br><span class="accent-blue">sin esfuerzo</span></h2>
+        <p style="margin-bottom: 20px;">
+          Fin del partido. Dictas tus observaciones a la IA por WhatsApp. En 2 minutos tienes una crónica completa lista para compartir con familias y redes sociales.
+        </p>
+        <div class="card" style="margin-bottom: 14px;">
+          <h3 style="color: #ef4444; margin-bottom: 10px;">❌ Sin BasketIQ:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• Llegar a casa a las 23:00h</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Escribir crónica durante 1 hora</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Padres esperando hasta el lunes</li>
+          </ul>
+        </div>
+        <div class="card" style="background: rgba(59,130,246,0.08);">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">✓ Con BasketIQ:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• Dictas notas en el coche (2 min)</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• IA genera crónica completa</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Familias reciben info esa noche</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Disponible 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body" style="min-height: 500px;">
+            <div class="wa-row out">
+              <div class="wa-bubble out">🎤 [Audio 1:34] Crónica partido Sub-14: Victoria 68-54 contra Las Rozas. Gran partido defensivo. Muy bien los rebotes. Destacar a Pablo #7 con 18 puntos y Marcos #12 con 8 asistencias. En negativo, muchas pérdidas en el tercer cuarto.</div>
+              <div class="wa-meta">Sáb 21:45</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Generando crónica...</div>
+                ⏳ Procesando audio y contexto del partido...
+              </div>
+              <div class="wa-meta">21:45</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">✓ Crónica generada</div>
+                <strong>Victoria del Sub-14 ante CB Las Rozas (68-54)</strong><br><br>
+                Gran jornada para nuestro Sub-14 que suma su tercera victoria consecutiva. El equipo mostró una solidez defensiva destacable, controlando el rebote y limitando las opciones del rival.<br><br>
+                <strong>Destacados:</strong><br>
+                🔥 Pablo #7: 18 puntos, MVP del partido<br>
+                🎯 Marcos #12: 8 asistencias, gran visión de juego<br>
+                🛡️ Gran trabajo defensivo colectivo<br><br>
+                <strong>Aspectos a mejorar:</strong><br>
+                Tercer cuarto complicado con pérdidas de balón. Trabajaremos el cuidado del balón bajo presión esta semana.<br><br>
+                ¡Enhorabuena chicos! 🏀💙
+                <div style="margin-top: 8px; padding: 8px; background: rgba(16,185,129,0.1); border-radius: 6px; font-size: 11px;">
+                  ✓ Lista para copiar y pegar en grupo WhatsApp familias<br>
+                  ✓ También disponible para RRSS con hashtags
+                </div>
+              </div>
+              <div class="wa-meta">21:47</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 7: Ejemplo 5 — Multimedia ══ -->
+    <section id="s2f" class="slide two-col">
+      <div class="blob" style="width:400px;height:400px;background:#f59e0b;top:-80px;right:-100px;opacity:0.08;"></div>
+      
+      <div class="col-left">
+        <div class="eyebrow">Ejemplo 5: Contenidos Multimedia</div>
+        <h2>Publicación<br><span class="accent-blue">automatizada</span></h2>
+        <p style="margin-bottom: 20px;">
+          Padres y jugadores comparten vídeos y fotos. El entrenador modera y la IA publica automáticamente en la web del club. Sin maquetación, sin trabajo extra.
+        </p>
+        <div class="card" style="margin-bottom: 14px;">
+          <h3 style="color: #ef4444; margin-bottom: 10px;">❌ Sin BasketIQ:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• Recibir vídeos por email/WhatsApp</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Descargar, editar metadata manualmente</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Subir a web, maquetar la página</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• 1-2 horas por cada contenido</li>
+          </ul>
+        </div>
+        <div class="card" style="background: rgba(59,130,246,0.08);">
+          <h3 style="color: var(--blue); margin-bottom: 10px;">✓ Con BasketIQ:</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            <li style="font-size: 0.88rem; color: var(--muted);">• Reenvías link al chat de IA</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Confirmas categoría y partido</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Publicación automática en la web</li>
+            <li style="font-size: 0.88rem; color: var(--muted);">• Todo en menos de 1 minuto</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="wa-window">
+          <div class="wa-header">
+            <div class="wa-avatar">IQ</div>
+            <div>
+              <div class="wa-name">BasketIQ Assistant</div>
+              <div class="wa-status">● Disponible 24/7</div>
+            </div>
+          </div>
+          <div class="wa-body" style="min-height: 500px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid rgba(251,191,36,0.5);">
+              <div style="font-size: 0.65rem; color: #fbbf24; font-weight: 700; margin-bottom: 4px;">👨‍👩‍👧 Padre/Jugador → Entrenador</div>
+              <div style="font-size: 0.75rem; color: var(--muted);">"¡Mira qué jugada hicimos! He subido este reel: youtube.com/shorts/abc123"</div>
+            </div>
+            <div class="wa-row out">
+              <div class="wa-bubble out">youtube.com/shorts/abc123</div>
+              <div class="wa-meta">Dom 19:30</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">BasketIQ · Contenido Detectado</div>
+                🎥 He detectado un vídeo de YouTube.<br><br>
+                <strong>¿A qué partido/evento pertenece?</strong><br>
+                Por favor indica:<br>
+                • Categoría (ej: Sub-14)<br>
+                • Partido/fecha (ej: vs Villanueva 7-Abril)
+              </div>
+              <div class="wa-meta">19:30</div>
+            </div>
+            <div class="wa-row out">
+              <div class="wa-bubble out">Sub-14 Masculino, partido vs CB Las Rozas del sábado</div>
+              <div class="wa-meta">19:31</div>
+            </div>
+            <div class="wa-row in">
+              <div class="wa-bubble in">
+                <div class="wa-label">✓ Confirmado</div>
+                Perfecto. He procesado el vídeo:<br><br>
+                <strong>🏀 Sub-14 Masculino</strong><br>
+                <strong>📅 CB Las Rozas - 6 Abr 2026</strong><br><br>
+                ✅ <strong>Publicado automáticamente</strong> en:<br>
+                • Web del club (sección Sub-14)<br>
+                • Galería multimedia del partido<br><br>
+                Los padres y jugadores ya pueden verlo.
+                <div style="margin-top: 8px; padding: 8px; background: rgba(16,185,129,0.1); border-radius: 6px; font-size: 11px;">
+                  ✓ Sin maquetación manual<br>
+                  ✓ Sin subidas manuales<br>
+                  ✓ Todo automatizado
+                </div>
+              </div>
+              <div class="wa-meta">19:31</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 8: Resumen Casos de Uso ══ -->
+    <section id="s3" class="slide" style="flex-direction: column;">
+      <div class="blob" style="width:450px;height:450px;background:var(--green);top:50%;right:-150px;opacity:0.08;"></div>
+      
+      <div style="text-align: center; margin-bottom: 32px;">
+        <div class="eyebrow">Resumen de Casos de Uso</div>
+        <h2>Todo lo que necesitas<br>en <span class="accent-blue">un solo lugar</span></h2>
+      </div>
+
+      <div class="scenario-grid">
+        <div class="scenario-card">
+          <div class="scenario-icon">📅</div>
+          <h3>Planificación Estratégica</h3>
+          <p>Objetivos técnicos/tácticos/físicos por mes, periodización y calendario integrado.</p>
+          <ul>
+            <li>Planificación de temporada por categorías</li>
+            <li>Diseño de pretemporada</li>
+            <li>Ratios entrenamiento/competición</li>
+            <li>Calendario con recordatorios automáticos</li>
+          </ul>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-icon">🔍</div>
+          <h3>Scouting y Análisis</h3>
+          <p>Análisis de rival y propio con estadística, vídeo y shot charts.</p>
+          <ul>
+            <li>Informes pre-partido del rival</li>
+            <li>Integración LiveStats/FIBA</li>
+            <li>Shot charts y zonas calientes</li>
+            <li>Análisis de quintetos y eficiencia</li>
+          </ul>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-icon">👤</div>
+          <h3>Gestión de Jugadores</h3>
+          <p>Evaluaciones individuales, planes de desarrollo y seguimiento de progreso.</p>
+          <ul>
+            <li>Fichas técnicas/tácticas/mentales</li>
+            <li>Planes de desarrollo individual</li>
+            <li>Seguimiento de progreso trimestral</li>
+            <li>Gestión RGPD de datos personales</li>
+          </ul>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-icon">👩‍👧‍👦</div>
+          <h3>Comunicación</h3>
+          <p>Mensajes familias, protocolos de conflicto y crónicas automatizadas.</p>
+          <ul>
+            <li>Plantillas de mensajes por situación</li>
+            <li>Crónicas postpartido automatizadas</li>
+            <li>Protocolo de escalado de conflictos</li>
+            <li>Gestión de expectativas</li>
+          </ul>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-icon">🧑‍🏫</div>
+          <h3>Desarrollo Staff</h3>
+          <p>Formación continua, observación de sesiones y mejora del equipo técnico.</p>
+          <ul>
+            <li>Rubricas de observación de sesión</li>
+            <li>Planes de mejora continua</li>
+            <li>Biblioteca de recursos formativos</li>
+            <li>Comunidad de práctica interna</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 9: Tecnología ══ -->
+    <section id="s4" class="slide" style="flex-direction: column; text-align: center;">
+      <div class="blob" style="width:500px;height:500px;background:var(--blue);top:-100px;right:-120px;opacity:0.1;"></div>
+      
+      <div class="eyebrow">¿Por qué funciona?</div>
+      <h2>La tecnología detrás<br>de <span class="accent-blue">BasketIQ</span></h2>
+      <p style="max-width: 800px; margin: 0 auto 40px;">
+        No es magia. Es conocimiento estructurado combinado con inteligencia artificial.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1100px;">
+        <div class="card">
+          <h3 style="color: var(--blue); margin-bottom: 12px;">🧠 Ontología del Baloncesto</h3>
+          <p style="font-size: 0.88rem;">
+            Más de 2.000 conceptos técnicos estructurados: ejercicios, progresiones, correcciones. Todo conectado y validado por expertos.
+          </p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--blue); margin-bottom: 12px;">📚 Fuentes Oficiales</h3>
+          <p style="font-size: 0.88rem;">
+            Todas las respuestas citadas: USA Basketball, FEB, FIBA, expertos reconocidos. Sin alucinaciones, sin inventos.
+          </p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--blue); margin-bottom: 12px;">⚡ IA Conversacional</h3>
+          <p style="font-size: 0.88rem;">
+            Entiendes y refinas tus preguntas. Contexto conversacional como hablar con un experto vía WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="max-width: 900px; margin: 40px auto 0; background: rgba(59,130,246,0.08);">
+        <p style="font-size: 1rem; color: #fff;">
+          <strong style="color: var(--blue);">🔒 Cumplimiento total:</strong> RGPD, protección de datos de menores, acceso restringido por roles. Todo pensado para clubes que trabajan con cantera.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 10: Roadmap ══ -->
+    <section id="s5" class="slide" style="flex-direction: column; text-align: center;">
+      <div class="blob" style="width:500px;height:500px;background:#a855f7;top:-100px;left:50%;transform:translateX(-50%);opacity:0.1;"></div>
+      
+      <div class="eyebrow">Roadmap 2026</div>
+      <h2>Próximos <span class="accent-blue">Pasos</span></h2>
+      <p style="max-width: 800px; margin: 0 auto 40px;">
+        Plan de implementación progresiva: de prueba de concepto a despliegue completo en el club
+      </p>
+
+      <div style="max-width: 1100px; margin: 0 auto;">
+        <!-- FASE 1 -->
+        <div class="card" style="margin-bottom: 24px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.3); padding: 24px;">
+          <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <div style="flex-shrink: 0; text-align: center; min-width: 120px;">
+              <div style="font-size: 2.5rem; margin-bottom: 8px;">🧪</div>
+              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--blue);">Fase 1</div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: #fff; margin-top: 4px;">Abril - Mayo</div>
+            </div>
+            <div style="flex: 1; text-align: left;">
+              <h3 style="color: var(--blue); margin-bottom: 12px; font-size: 1.1rem;">Prueba de Concepto (PoC)</h3>
+              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 12px;">Crear 1-2 flujos funcionales integrados con el portal del club como validación inicial.</p>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 0;">
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: var(--blue); flex-shrink: 0;">✓</span>Integración con portal web del club</li>
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: var(--blue); flex-shrink: 0;">✓</span>1-2 flujos específicos (ej: consulta ejercicios + crónicas)</li>
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: var(--blue); flex-shrink: 0;">✓</span>Validación técnica y feedback inicial</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- FASE 2 -->
+        <div class="card" style="margin-bottom: 24px; background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); padding: 24px;">
+          <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <div style="flex-shrink: 0; text-align: center; min-width: 120px;">
+              <div style="font-size: 2.5rem; margin-bottom: 8px;">🚀</div>
+              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #a855f7;">Fase 2</div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: #fff; margin-top: 4px;">Junio - Agosto</div>
+            </div>
+            <div style="flex: 1; text-align: left;">
+              <h3 style="color: #a855f7; margin-bottom: 12px; font-size: 1.1rem;">Primer MVP Completo</h3>
+              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 12px;">Desarrollo del MVP enfocado en asistir al entrenador en el día a día. Implementación piloto con una categoría.</p>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 0;">
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: #a855f7; flex-shrink: 0;">✓</span>Funcionalidades core: preparación entrenos, feedback, crónicas</li>
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: #a855f7; flex-shrink: 0;">✓</span>Piloto con 1 categoría (ej: Junior/Cadete/Infantil)</li>
+                <li style="font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px;"><span style="color: #a855f7; flex-shrink: 0;">✓</span>Iteración continua basada en uso real</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- FASE 3 -->
+        <div class="card" style="margin-bottom: 24px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); padding: 24px;">
+          <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <div style="flex-shrink: 0; text-align: center; min-width: 120px;">
+              <div style="font-size: 2.5rem; margin-bottom: 8px;">📈</div>
+              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--green);">Fase 3</div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: #fff; margin-top: 4px;">Sept 2026+</div>
+            </div>
+            <div style="flex: 1; text-align: left;">
+              <h3 style="color: var(--green); margin-bottom: 12px; font-size: 1.1rem;">Rollout Progresivo por Categorías</h3>
+              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 12px;">Extensión mensual del sistema a todas las categorías del club (6 en total), comenzando por las superiores.</p>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px;">
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Sept 2026</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Senior</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Oct 2026</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Junior</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Nov 2026</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Cadete</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Dic 2026</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Infantil</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Ene 2027</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Alevín</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.7rem; color: var(--green); font-weight: 700;">Feb 2027</div>
+                  <div style="font-size: 0.85rem; color: #fff; margin-top: 2px;">🏀 Benjamín</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Propuesta colaboración compacta -->
+        <div class="card" style="padding: 24px; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.08)); border: 1px solid rgba(59,130,246,0.3);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div>
+              <h3 style="color: var(--green); margin-bottom: 12px; font-size: 1rem;">🤝 Modelo de Costes</h3>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="background: rgba(16,185,129,0.1); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--green);">
+                  <div style="font-size: 0.75rem; color: var(--green); font-weight: 700; margin-bottom: 4px;">2026-2027</div>
+                  <div style="font-size: 0.82rem; color: #fff; font-weight: 700;">COSTE CERO</div>
+                  <div style="font-size: 0.72rem; color: var(--muted); margin-top: 2px;">Conejillos de indias</div>
+                </div>
+                <div style="background: rgba(59,130,246,0.08); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--blue);">
+                  <div style="font-size: 0.75rem; color: var(--blue); font-weight: 700; margin-bottom: 4px;">Desde 2028</div>
+                  <div style="font-size: 0.82rem; color: #fff; font-weight: 700;">Solo infraestructura</div>
+                  <div style="font-size: 0.72rem; color: var(--muted); margin-top: 2px;">WhatsApp, IA, hosting</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 style="color: var(--green); margin-bottom: 12px; font-size: 1rem;">🎯 Relación</h3>
+              <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 10px;">Club Baloncesto Villanueva de la Cañada es nuestro <strong style="color: #fff;">primer apoyo institucional</strong> y partner estratégico.</p>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 5px; padding-left: 0;">
+                <li style="font-size: 0.75rem; color: var(--muted); display: flex; gap: 6px;">
+                  <span style="color: var(--green); flex-shrink: 0;">✓</span>Soporte prioritario
+                </li>
+                <li style="font-size: 0.75rem; color: var(--muted); display: flex; gap: 6px;">
+                  <span style="color: var(--green); flex-shrink: 0;">✓</span>Early access features
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 style="color: var(--green); margin-bottom: 12px; font-size: 1rem;">💰 Ayudas: 7.000€</h3>
+              <p style="font-size: 0.82rem; color: var(--muted);">Solicitud conjunta <strong style="color: #fff;">Madrid Emprende 2026</strong> para:</p>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 5px; padding-left: 0; margin-top: 8px;">
+                <li style="font-size: 0.75rem; color: var(--muted); display: flex; gap: 6px;">
+                  <span style="color: var(--green); flex-shrink: 0;">•</span>Formación entrenadores
+                </li>
+                <li style="font-size: 0.75rem; color: var(--muted); display: flex; gap: 6px;">
+                  <span style="color: var(--green); flex-shrink: 0;">•</span>Materiales didácticos
+                </li>
+                <li style="font-size: 0.75rem; color: var(--muted); display: flex; gap: 6px;">
+                  <span style="color: var(--green); flex-shrink: 0;">•</span>Soporte técnico
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SLIDE 11: Cierre ══ -->
+    <section id="s6" class="slide" style="flex-direction: column; text-align: center;">
+      <div class="logo-hero">
+        <div class="logo-mark">🏀</div>
+        <span class="logo-text">BasketIQ</span>
+      </div>
+      <h1 style="margin-top: 24px;">Gracias por vuestro tiempo</h1>
+      <p style="font-size: 1.1rem; max-width: 600px; margin: 20px auto;">
+        Estamos emocionados de poder trabajar con el Club Baloncesto Villanueva de la Cañada.
+      </p>
+      <div style="margin-top: 40px; display: flex; gap: 20px; justify-content: center;">
+        <span class="badge badge-blue" style="font-size: 12px; padding: 8px 16px;">IA + Baloncesto</span>
+        <span class="badge badge-green" style="font-size: 12px; padding: 8px 16px;">Hecho en España</span>
+      </div>
+    </section>
+
+  </div><!-- /deck -->
+  </div><!-- /pitch-wrap -->
+
+  <script>
+    /* ── Auth ── */
+    (function() {
+      var gate = document.getElementById('login-gate');
+      var wrap = document.getElementById('pitch-wrap');
+
+      if (sessionStorage.getItem('biq_auth') === 'ok') {
+        gate.style.display = 'none';
+        wrap.style.display = 'block';
+        initDeck();
+        return;
+      }
+
+      document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var u = document.getElementById('user-input').value;
+        var p = document.getElementById('pass-input').value;
+        if (btoa(u) === 'anVudGFk' && btoa(p) === 'Y2FuYWRhMjAyNg==') {
+          sessionStorage.setItem('biq_auth', 'ok');
+          gate.style.display = 'none';
+          wrap.style.display = 'block';
+          initDeck();
+        } else {
+          document.getElementById('login-error').style.display = 'block';
+        }
+      });
+    })();
+
+    /* ── Deck Navigation ── */
+    function initDeck() {
+      var slides = document.querySelectorAll('.slide');
+      var dotNav = document.getElementById('dotNav');
+      var counter = document.getElementById('counter');
+      var deck = document.getElementById('deck');
+
+      dotNav.innerHTML = '';
+      slides.forEach(function(slide, index) {
+        var dot = document.createElement('button');
+        dot.className = 'dot';
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', function() {
+          slide.scrollIntoView({ behavior: 'smooth' });
+        });
+        dotNav.appendChild(dot);
+      });
+
+      var dots = document.querySelectorAll('.dot');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var index = Array.from(slides).indexOf(entry.target);
+            dots.forEach(function(dot) { dot.classList.remove('active'); });
+            dots[index].classList.add('active');
+            counter.textContent = (index + 1) + ' / ' + slides.length;
+          }
+        });
+      }, { threshold: 0.5 });
+
+      slides.forEach(function(slide) { observer.observe(slide); });
+    }
+  </script>
+
+</body>
+</html>

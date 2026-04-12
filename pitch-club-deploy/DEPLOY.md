@@ -1,0 +1,116 @@
+# Despliegue: Pitch BasketIQ para CB Villanueva de la Cañada
+
+## Objetivo
+
+Desplegar `index.html` como un sitio web independiente con protección por contraseña.
+Se usará para presentar BasketIQ a la junta directiva del Club Baloncesto Villanueva de la Cañada (jueves 17 abril 2026).
+
+---
+
+## Credenciales de acceso
+
+- **Usuario:** `juntad`
+- **Contraseña:** `canada2026`
+
+La autenticación es client-side (base64 + sessionStorage). No es criptográficamente segura, pero es adecuada para una presentación privada con URL no pública.
+
+---
+
+## Contenido
+
+- `index.html` — Página única autocontenida (~1300 líneas):
+  - **Login gate**: overlay con formulario usuario/contraseña
+  - **Pitch deck**: 11 slides con scroll-snap vertical, navegación por puntos laterales
+  - **Sin dependencias externas** excepto Google Fonts (Outfit)
+  - **Sin assets**: todo inline (CSS, JS, HTML)
+
+### Slides incluidos
+
+1. Hero — Presentación BasketIQ
+2. Quick Win #1 — Preparación de entrenamientos
+3. Ejemplo 1 — Contexto de programación (mockup WhatsApp)
+4. Ejemplo 2 — Preparación física adaptada por edad
+5. Ejemplo 3 — Feedback y ajuste de programación
+6. Ejemplo 4 — Crónicas postpartido automatizadas
+7. Ejemplo 5 — Publicación multimedia automatizada
+8. Resumen — Todos los casos de uso
+9. Tecnología — Ontología, fuentes oficiales, IA conversacional
+10. Roadmap 2026 — 3 fases + propuesta de colaboración + Madrid Emprende
+11. Cierre — Agradecimiento
+
+> **Nota**: El slide de diagrama de ontología (s4b del original `pitch-club-canada.html`) se omitió por complejidad visual. Si se necesita, copiar las líneas 860-1042 del archivo original y añadirlas entre los slides s4 y s5 del index.html.
+
+---
+
+## Instrucciones de despliegue
+
+### Opción A: Vercel (preferida)
+
+1. Ir a [vercel.com](https://vercel.com) → Log in con cuenta de GitHub (`jjdelcampo`)
+2. "Add New Project" → Import desde GitHub → `jjdelcampo/basketiq-landing-page`
+3. **IMPORTANTE**: Configurar "Root Directory" como `pitch-club-deploy`
+4. Framework Preset: "Other"
+5. Build Command: (dejar vacío)
+6. Output Directory: `.`
+7. Deploy
+
+El sitio se desplegará en `https://basketiq-pitch-club.vercel.app` (o el nombre que Vercel asigne).
+
+> **Nota**: Si el repo ya está conectado a Vercel para la landing page principal, crear un nuevo proyecto apuntando al mismo repo pero con Root Directory diferente.
+
+### Opción B: Netlify (alternativa)
+
+1. Ir a [app.netlify.com](https://app.netlify.com)
+2. "Add new site" → "Deploy manually"
+3. **Drag & drop** la carpeta `pitch-club-deploy/` completa
+4. Netlify asignará un URL aleatorio (se puede personalizar después)
+
+### Opción C: Vercel CLI
+
+```bash
+cd pitch-club-deploy
+npx vercel --prod
+```
+
+Seguir las instrucciones interactivas. Elegir "Other" como framework.
+
+### Opción D: Netlify CLI
+
+```bash
+cd pitch-club-deploy
+npx netlify-cli deploy --prod --dir .
+```
+
+---
+
+## Verificación post-despliegue
+
+1. Abrir la URL del sitio
+2. Verificar que aparece el login gate (fondo oscuro, formulario centrado)
+3. Introducir credenciales: `juntad` / `canada2026`
+4. Verificar que aparece el pitch deck con 11 slides
+5. Verificar navegación: scroll vertical con snap, puntos laterales, contador
+6. Verificar que al refrescar la página NO vuelve a pedir credenciales (sessionStorage)
+7. Verificar en una ventana de incógnito que SÍ pide credenciales
+
+---
+
+## Relación con el repo
+
+Este proyecto (`pitch-club-deploy/`) es un **despliegue independiente** del repo principal `basketiq-landing-page`. El repo contiene:
+
+```
+basketiq-landing-page/
+├── index.html              ← Landing page EN (desplegada en basketiq.io)
+├── es.html                 ← Landing page ES
+├── pitch-club-canada.html  ← Pitch original (sin protección, 12 slides)
+├── pitch-socio.html        ← Pitch para socios/partners
+├── vercel.json             ← Config de la landing principal
+├── assets/
+├── basketiq_VECTOR_PRO_pack/
+└── pitch-club-deploy/      ← ESTE PROYECTO (despliegue independiente)
+    ├── index.html           ← Pitch protegido con login (11 slides)
+    └── DEPLOY.md            ← Este archivo
+```
+
+El `index.html` de `pitch-club-deploy/` es una versión autocontenida y protegida de `pitch-club-canada.html` (que está en la raíz del repo).
