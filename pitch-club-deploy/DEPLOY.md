@@ -49,8 +49,8 @@ Desplegado correctamente en Vercel el 14 de abril de 2026.
 
 - **Proyecto Vercel:** `jjdelcampos-projects/pitch-club-deploy`
 - **URL de producción estable:** `https://pitch-club-deploy.vercel.app`
-- **URL de la build desplegada:** `https://pitch-club-deploy-8z3u2qqnl-jjdelcampos-projects.vercel.app`
-- **URL de inspección en Vercel:** `https://vercel.com/jjdelcampos-projects/pitch-club-deploy/HuBboBtJLnrybAP4zMjMqPrjJkKx`
+- **URL de la build desplegada:** `https://pitch-club-deploy-50tnb4ots-jjdelcampos-projects.vercel.app`
+- **URL de inspección en Vercel:** `https://vercel.com/jjdelcampos-projects/pitch-club-deploy/FLh1WSomTQ6gkqidi4h3rGk1UBBp`
 
 ### Acceso actual
 
