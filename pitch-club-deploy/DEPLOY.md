@@ -120,7 +120,7 @@ Este proyecto (`pitch-club-deploy/`) es un **despliegue independiente** del repo
 basketiq-landing-page/
 ├── index.html              ← Landing page EN (desplegada en basketiq.io)
 ├── es.html                 ← Landing page ES
-├── pitch-club-canada.html  ← Pitch original (sin protección, 12 slides)
+├── pitch-club-canada.html  ← Redirección ligera al pitch canónico
 ├── pitch-socio.html        ← Pitch para socios/partners
 ├── vercel.json             ← Config de la landing principal
 ├── assets/
@@ -130,4 +130,4 @@ basketiq-landing-page/
     └── DEPLOY.md            ← Este archivo
 ```
 
-El `index.html` de `pitch-club-deploy/` es la versión autocontenida, protegida y completa de `pitch-club-canada.html` (que está en la raíz del repo).
+El `index.html` de `pitch-club-deploy/` es la versión autocontenida, protegida y completa del pitch del club. El archivo `pitch-club-canada.html` se mantiene solo como redirección para evitar duplicidades.
