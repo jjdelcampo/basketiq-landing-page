@@ -567,24 +567,29 @@
         });
         var idx=0;
         function typeWords(bubble,html,cb){
-          var txt=bubble.textContent||'';
-          // Extract visible text from HTML
+          // Preserve wa-label if present
           var tmp=document.createElement('div');tmp.innerHTML=html;
+          var labelEl=tmp.querySelector('.wa-label');
+          var labelHtml=labelEl?labelEl.outerHTML:'';
+          if(labelEl)labelEl.remove();
           var words=(tmp.textContent||'').split(/\s+/).filter(function(w){return w.length>0;});
-          bubble.textContent='';
+          // Show label immediately, animate only content
+          bubble.innerHTML=labelHtml;
+          var textSpan=document.createElement('span');
+          bubble.appendChild(textSpan);
           var wi=0;
+          var speed=words.length>30?25:50;
           function addWord(){
             if(wi>=words.length){
-              // Restore full HTML with formatting
               bubble.innerHTML=html;
               body.scrollTop=body.scrollHeight;
               cb();
               return;
             }
-            bubble.textContent+=(wi>0?' ':'')+words[wi];
+            textSpan.textContent+=(wi>0?' ':'')+words[wi];
             wi++;
             body.scrollTop=body.scrollHeight;
-            animTimers.push(setTimeout(addWord,50));
+            animTimers.push(setTimeout(addWord,speed));
           }
           addWord();
         }
