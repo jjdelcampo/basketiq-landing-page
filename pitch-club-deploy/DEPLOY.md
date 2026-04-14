@@ -20,7 +20,7 @@ La autenticación es client-side (base64 + sessionStorage). No es criptográfica
 
 - `index.html` — Página única autocontenida (~1300 líneas):
   - **Login gate**: overlay con formulario usuario/contraseña
-  - **Pitch deck**: 11 slides con scroll-snap vertical, navegación por puntos laterales
+  - **Pitch deck**: 12 slides con scroll-snap vertical, navegación por puntos laterales
   - **Sin dependencias externas** excepto Google Fonts (Outfit)
   - **Sin assets**: todo inline (CSS, JS, HTML)
 
@@ -35,10 +35,9 @@ La autenticación es client-side (base64 + sessionStorage). No es criptográfica
 7. Ejemplo 5 — Publicación multimedia automatizada
 8. Resumen — Todos los casos de uso
 9. Tecnología — Ontología, fuentes oficiales, IA conversacional
-10. Roadmap 2026 — 3 fases + propuesta de colaboración + Madrid Emprende
-11. Cierre — Agradecimiento
-
-> **Nota**: El slide de diagrama de ontología (s4b del original `pitch-club-canada.html`) se omitió por complejidad visual. Si se necesita, copiar las líneas 860-1042 del archivo original y añadirlas entre los slides s4 y s5 del index.html.
+10. Ontología visual — Flujo de conocimiento y ciclo de mejora continua
+11. Roadmap 2026 — 3 fases + propuesta de colaboración + Madrid Emprende
+12. Cierre — Agradecimiento
 
 ---
 
@@ -50,8 +49,8 @@ Desplegado correctamente en Vercel el 14 de abril de 2026.
 
 - **Proyecto Vercel:** `jjdelcampos-projects/pitch-club-deploy`
 - **URL de producción estable:** `https://pitch-club-deploy.vercel.app`
-- **URL de la build desplegada:** `https://pitch-club-deploy-xvoorgtwy-jjdelcampos-projects.vercel.app`
-- **URL de inspección en Vercel:** `https://vercel.com/jjdelcampos-projects/pitch-club-deploy/51MUxTpYSyHh1qaDFcPLkiuXktjZ`
+- **URL de la build desplegada:** `https://pitch-club-deploy-8z3u2qqnl-jjdelcampos-projects.vercel.app`
+- **URL de inspección en Vercel:** `https://vercel.com/jjdelcampos-projects/pitch-club-deploy/HuBboBtJLnrybAP4zMjMqPrjJkKx`
 
 ### Acceso actual
 
@@ -106,7 +105,7 @@ npx netlify-cli deploy --prod --dir .
 1. Abrir la URL del sitio
 2. Verificar que aparece el login gate (fondo oscuro, formulario centrado)
 3. Introducir credenciales: `juntad` / `canada2026`
-4. Verificar que aparece el pitch deck con 11 slides
+4. Verificar que aparece el pitch deck con 12 slides
 5. Verificar navegación: scroll vertical con snap, puntos laterales, contador
 6. Verificar que al refrescar la página NO vuelve a pedir credenciales (sessionStorage)
 7. Verificar en una ventana de incógnito que SÍ pide credenciales
@@ -127,8 +126,8 @@ basketiq-landing-page/
 ├── assets/
 ├── basketiq_VECTOR_PRO_pack/
 └── pitch-club-deploy/      ← ESTE PROYECTO (despliegue independiente)
-    ├── index.html           ← Pitch protegido con login (11 slides)
+    ├── index.html           ← Pitch protegido con login (12 slides)
     └── DEPLOY.md            ← Este archivo
 ```
 
-El `index.html` de `pitch-club-deploy/` es una versión autocontenida y protegida de `pitch-club-canada.html` (que está en la raíz del repo).
+El `index.html` de `pitch-club-deploy/` es la versión autocontenida, protegida y completa de `pitch-club-canada.html` (que está en la raíz del repo).
