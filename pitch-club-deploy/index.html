@@ -58,8 +58,8 @@
     .feature-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:18px;text-align:center;box-shadow:var(--card-shadow);transition:transform .2s,box-shadow .2s}
     .feature-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
     .feature-icon{font-size:32px;margin-bottom:8px}
-    .carousel-slide .wa-body .wa-row{display:none}
-    .carousel-slide .wa-body .wa-row.wa-on{display:flex}
+    .carousel-slide .wa-body .wa-row{display:none!important}
+    .carousel-slide .wa-body .wa-row.wa-on{display:flex!important}
     .wa-typing{display:flex;align-items:center;gap:4px;padding:8px 14px;background:#202c33;border-radius:10px;max-width:70px}
     .wa-typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);animation:waTyping 1.2s infinite}
     .wa-typing-dot:nth-child(2){animation-delay:.2s}
@@ -645,7 +645,10 @@
       if(prev)prev.addEventListener('click',function(){goTo(cur-1);});
       if(next)next.addEventListener('click',function(){goTo(cur+1);});
       // Animate first slide on load
-      animateMessages(slides[0]);
+      goTo(0);
+      // Re-trigger animation when carousel scrolls into view
+      var carSec=document.getElementById('carousel-section');
+      if(carSec){var carObs=new IntersectionObserver(function(ent){if(ent[0].isIntersecting){goTo(cur);}},{threshold:0.3});carObs.observe(carSec);}
     }
   </script>
 </body>
