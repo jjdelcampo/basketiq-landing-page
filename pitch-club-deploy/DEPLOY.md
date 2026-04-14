@@ -3,7 +3,7 @@
 ## Objetivo
 
 Desplegar `index.html` como un sitio web independiente con protección por contraseña.
-Se usará para presentar BasketIQ a la junta directiva del Club Baloncesto Villanueva de la Cañada (jueves 17 abril 2026).
+Se usará para presentar BasketIQ a la junta directiva del Club Baloncesto Villanueva de la Cañada (viernes 17 abril 2026).
 
 ---
 
@@ -44,6 +44,24 @@ La autenticación es client-side (base64 + sessionStorage). No es criptográfica
 
 ## Instrucciones de despliegue
 
+## Estado actual del despliegue
+
+Desplegado correctamente en Vercel el 14 de abril de 2026.
+
+- **Proyecto Vercel:** `jjdelcampos-projects/pitch-club-deploy`
+- **URL de producción estable:** `https://pitch-club-deploy.vercel.app`
+- **URL de la build desplegada:** `https://pitch-club-deploy-xvoorgtwy-jjdelcampos-projects.vercel.app`
+- **URL de inspección en Vercel:** `https://vercel.com/jjdelcampos-projects/pitch-club-deploy/51MUxTpYSyHh1qaDFcPLkiuXktjZ`
+
+### Acceso actual
+
+- **Usuario:** `juntad`
+- **Contraseña:** `canada2026`
+
+> **Nota**: Se añadió `<meta name="robots" content="noindex, nofollow">` al `index.html` para minimizar la indexación pública del enlace.
+
+---
+
 ### Opción A: Vercel (preferida)
 
 1. Ir a [vercel.com](https://vercel.com) → Log in con cuenta de GitHub (`jjdelcampo`)
@@ -54,7 +72,7 @@ La autenticación es client-side (base64 + sessionStorage). No es criptográfica
 6. Output Directory: `.`
 7. Deploy
 
-El sitio se desplegará en `https://basketiq-pitch-club.vercel.app` (o el nombre que Vercel asigne).
+El sitio se desplegará en una URL de Vercel. En el despliegue actual, la URL estable es `https://pitch-club-deploy.vercel.app`.
 
 > **Nota**: Si el repo ya está conectado a Vercel para la landing page principal, crear un nuevo proyecto apuntando al mismo repo pero con Root Directory diferente.
 
