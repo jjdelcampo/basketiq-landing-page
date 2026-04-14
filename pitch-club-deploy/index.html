@@ -646,9 +646,9 @@
       if(next)next.addEventListener('click',function(){goTo(cur+1);});
       // Animate first slide on load
       goTo(0);
-      // Re-trigger animation when carousel scrolls into view
+      // Re-trigger animation only when carousel enters view after being away
       var carSec=document.getElementById('carousel-section');
-      if(carSec){var carObs=new IntersectionObserver(function(ent){if(ent[0].isIntersecting){goTo(cur);}},{threshold:0.3});carObs.observe(carSec);}
+      if(carSec){var wasOut=false;var carObs=new IntersectionObserver(function(ent){if(ent[0].isIntersecting){if(wasOut){goTo(cur);}wasOut=false;}else{wasOut=true;}},{threshold:0.3});carObs.observe(carSec);}
     }
   </script>
 </body>
