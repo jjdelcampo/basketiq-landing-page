@@ -3,10 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>BasketIQ · De una voz a todo un club con IA</title>
 <link rel="stylesheet" href="assets/basketiq_timeline.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  #login-gate{position:fixed;inset:0;z-index:10000;background:#0b0f1a;display:flex;align-items:center;justify-content:center;font-family:'Outfit',system-ui,sans-serif}
+  #login-gate .login-box{background:linear-gradient(180deg,rgba(26,34,52,0.96),rgba(18,24,39,0.96));border:1px solid rgba(255,255,255,0.08);border-radius:22px;padding:44px 40px;width:400px;max-width:90vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(255,122,26,0.08),0 0 60px rgba(255,122,26,0.10)}
+  #login-gate .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+  #login-gate .login-logo-mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#ff7a1a,#ffb457);display:flex;align-items:center;justify-content:center;font-size:22px}
+  #login-gate .login-logo-text{font-size:1.5rem;font-weight:800;color:#f5f7fb;letter-spacing:-0.3px}
+  #login-gate .login-subtitle{color:#94a3b8;font-size:0.85rem;margin-bottom:26px;letter-spacing:0.4px}
+  #login-gate .login-field{width:100%;padding:13px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);border-radius:10px;color:#f5f7fb;font-family:inherit;font-size:0.95rem;margin-bottom:12px;outline:none;transition:border-color .2s,background .2s}
+  #login-gate .login-field::placeholder{color:#64748b}
+  #login-gate .login-field:focus{border-color:#ff7a1a;background:rgba(255,255,255,0.06)}
+  #login-gate .login-btn{width:100%;padding:13px;background:linear-gradient(90deg,#ff7a1a,#ff9a3c);color:#1a1a1a;border:none;border-radius:10px;font-family:inherit;font-size:0.95rem;font-weight:800;letter-spacing:0.3px;cursor:pointer;transition:transform .15s,box-shadow .15s;margin-top:4px}
+  #login-gate .login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(255,122,26,0.35)}
+  #login-gate .login-error{display:none;color:#f87171;font-size:0.8rem;margin-top:12px}
+  #login-gate .login-footer{color:#64748b;font-size:0.7rem;margin-top:22px;letter-spacing:0.5px}
+</style>
 </head>
 <body>
+<div id="login-gate">
+  <div class="login-box">
+    <div class="login-logo"><div class="login-logo-mark">🏀</div><span class="login-logo-text">BasketIQ</span></div>
+    <p class="login-subtitle">Roadmap interno · acceso restringido</p>
+    <form id="login-form" autocomplete="off">
+      <input class="login-field" id="user-input" type="text" placeholder="Usuario" autofocus>
+      <input class="login-field" id="pass-input" type="password" placeholder="Contraseña">
+      <button class="login-btn" type="submit">Acceder</button>
+      <p class="login-error" id="login-error">Usuario o contraseña incorrectos</p>
+    </form>
+    <p class="login-footer">BasketIQ · 2026</p>
+  </div>
+</div>
+
+<div id="page-wrap" style="display:none">
 <div class="page">
 
   <header class="header">
@@ -234,10 +267,47 @@
   </div>
 </div>
 
-<script src="assets/basketiq_timeline_data.js"></script>
-<script src="assets/basketiq_timeline_examples.js"></script>
-<script src="assets/basketiq_timeline_grants.js"></script>
-<script src="assets/basketiq_timeline_architecture.js"></script>
-<script src="assets/basketiq_timeline_app.js"></script>
+</div>
+
+<script>
+(function(){
+  var gate = document.getElementById('login-gate');
+  var wrap = document.getElementById('page-wrap');
+  var SCRIPTS = [
+    'assets/basketiq_timeline_data.js',
+    'assets/basketiq_timeline_examples.js',
+    'assets/basketiq_timeline_grants.js',
+    'assets/basketiq_timeline_architecture.js',
+    'assets/basketiq_timeline_app.js'
+  ];
+  function loadScripts(i){
+    if(i>=SCRIPTS.length) return;
+    var s = document.createElement('script');
+    s.src = SCRIPTS[i];
+    s.onload = function(){ loadScripts(i+1); };
+    document.body.appendChild(s);
+  }
+  function unlock(){
+    gate.style.display = 'none';
+    wrap.style.display = 'block';
+    loadScripts(0);
+  }
+  // Persistente: si ya entró antes en esta sesión, no volver a pedir.
+  if (sessionStorage.getItem('biq_roadmap_auth') === 'ok') { unlock(); return; }
+  document.getElementById('login-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var u = document.getElementById('user-input').value;
+    var p = document.getElementById('pass-input').value;
+    // Credenciales codificadas en base64 (no es seguridad criptográfica;
+    // basta para impedir el acceso casual con URL pública).
+    if (btoa(u) === 'cm9hZG1hcA==' && btoa(p) === 'U2VwdGllbWJyZQ==') {
+      sessionStorage.setItem('biq_roadmap_auth','ok');
+      unlock();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  });
+})();
+</script>
 </body>
 </html>
